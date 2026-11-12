@@ -1,169 +1,58 @@
-﻿# TIKKA - Home Services Mobile Application
+# TIKKA
 
-TIKKA is an Android mobile application being developed for the
-EC5208 Mobile Application Development module at the
-Faculty of Engineering, University of Ruhuna, Sri Lanka.
+TIKKA is a customer-facing Android home-services application for the EC5208 Mobile Application Development module at the University of Ruhuna. It is built with Flutter and Dart, with Supabase Auth and PostgreSQL as the intended backend.
 
-The application aims to help users discover home services,
-make bookings, track service requests, and submit reviews.
+The MVP covers customer sign-in, browsing household services, submitting and tracking requests, managing a customer profile, and rating completed work. A minimal authorized administrative testing workflow is outside the customer app; there is no separate admin mobile app.
 
-## Technology Stack
+## Team
 
-- Frontend: Flutter and Dart
-- Platform: Android
-- Backend (planned): Supabase
-- Database (planned): PostgreSQL
-- Authentication (planned): Supabase Authentication
-- Version Control: Git and GitHub
-- UI/UX Design: Figma
+| Member | Ownership |
+|---|---|
+| PrabodhaRanawaka | Flutter architecture, shared UI, authentication, integration, final UI consistency |
+| ashuraweismann | Supabase backend, services, bookings, administrative testing, Android release preparation |
+| jayasahan | Profiles, tracking, ratings and reviews, QA, final documentation |
 
-## Project Information
+## Repository status
 
-- Module: EC5208 - Mobile Application Development
-- Project: TIKKA - Home Services Mobile Application
-- Deadline: 15 December 2026
-- Android Application ID: `com.tikka.app`
-- Flutter Package Name: `tikka`
+The merged main branch contains the initial Flutter/Android scaffold, app theme, lint setup, and feature-directory placeholders. The app still uses the Flutter starter counter screen. Supabase project configuration and customer features are not implemented in this scaffold.
 
-## Development Team
+Phase 01 documentation is prepared as a review draft on feature/app-foundation. Cross-feature contracts and technical recommendations in the documents are drafts until the team approves them. Do not treat the proposed router, state-management package, profile trigger, or booking schema as implemented.
 
-| Member | Responsibilities |
-|--------|------------------|
-| Prabodha Ranawaka | Project Lead, Flutter Architecture, Authentication |
-| Kavindu | Services and Booking |
-| Hansana | Request Tracking, Profile, Reviews and QA |
+## Documentation
 
-## Project Structure
+- [Architecture](docs/ARCHITECTURE.md)
+- [Shared contracts and decision register](docs/SHARED_CONTRACTS.md)
+- [Development phases and milestones](docs/DEVELOPMENT_PLAN.md)
+- [Figma design reference](docs/DESIGN_REFERENCE.md)
+- [Repository instructions](AGENTS.md)
 
-```text
-lib/
-├── main.dart
-├── app/
-│   ├── app.dart
-│   ├── router/
-│   └── theme/
-│       └── app_theme.dart
-├── core/
-│   ├── constants/
-│   ├── utils/
-│   └── widgets/
-└── features/
-    ├── auth/
-    ├── services/
-    ├── bookings/
-    ├── tracking/
-    ├── profile/
-    └── reviews/
+## Technology and identifiers
 
-test/
-android/
+- Flutter and Dart for Android.
+- Supabase Auth and PostgreSQL are the target backend.
+- Android application ID and namespace: com.tikka.app.
+- Current Figma reference: [TIKKA Mobile App — Flutter MVP](https://www.figma.com/design/ZkL4pUNzpc3cJ1groSn2KT/TIKKA-Mobile-App-%E2%80%94-Flutter-MVP--Copy-?node-id=0-1&m=dev&t=mo3oijoMwRdsSb6r-1).
 
-The project follows a lightweight feature-first architecture.
+Do not assume a Supabase project is configured. The app must use only client-safe credentials; service-role credentials must never be bundled into the Flutter app.
 
-Each feature will contain its own screens, widgets, models,
-and data-access code as needed.
+## Getting started
 
-## Development Requirements
+Requirements documented by the scaffold include Flutter 3.47.6 stable, Dart 3.13.5, Android SDK, and Git.
 
-- Flutter 3.47.6 (stable)
-- Dart 3.13.5
-- Android SDK
-- Android Studio or VS Code
-- Git
-
-## Getting Started
-
-Clone the repository:
-
-```bash
-git clone https://github.com/jayasahan/TIKKAapp.git
-cd TIKKAapp
-```
-
-Install Flutter dependencies:
-
-```bash
+~~~sh
 flutter pub get
-```
-
-Check available devices:
-
-```bash
 flutter devices
-```
-
-Run the Android application:
-
-```bash
 flutter run -d <device-id>
-```
+~~~
 
-## Code Quality
+Before submitting approved Dart implementation work, format and verify it:
 
-Format Dart code:
-
-```bash
+~~~sh
 dart format lib test
-```
-
-Run static analysis:
-
-```bash
 flutter analyze
-```
-
-Run tests:
-
-```bash
 flutter test
-```
+~~~
 
-All contributions should pass formatting, analysis,
-and tests before a pull request is created.
+## Development workflow
 
-## Git Workflow
-
-- `main` is the shared integration branch.
-- Each member develops changes on a separate feature branch.
-- Do not commit directly to `main`.
-- Open a pull request for teammate review before merging.
-- Keep commits focused and descriptive.
-
-Example branch names:
-
-- `chore/flutter-scaffold`
-- `feature/authentication`
-- `feature/services-booking`
-- `feature/request-tracking`
-
-## Current Status
-
-- [x] Flutter project initialized
-- [x] Android application identifier configured
-- [x] Feature-first folder structure established
-- [x] Shared application theme created
-- [x] Linting configured
-- [x] Initial static analysis and widget tests passed
-- [ ] Android emulator execution verified
-- [ ] Supabase integration
-- [ ] Authentication
-- [ ] Services and booking
-- [ ] Request tracking
-- [ ] Profile and reviews
-
-## Design Reference
-
-Figma:
-https://www.figma.com/design/bD3SdH2CC3THMDWD2eZnkf/TIKKA-Mobile-App-%E2%80%94-Flutter-MVP
-
-## Notes
-
-The initial scaffold retains Flutter's sample counter screen
-temporarily to verify that the application builds and tests correctly.
-
-Supabase integration and application features will be implemented
-in subsequent development branches.
-
-## License
-
-This is an academic group project. No license has been selected yet.
+Work on an approved task branch based on the latest main, keep changes focused, and link a reviewed pull request to its GitHub issue. Do not create branches, worktrees, commits, pull requests, or modify remote issues without explicit user authorization. See AGENTS.md for the full collaboration rules.
