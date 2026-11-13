@@ -36,10 +36,12 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   flutter_svg: ^2.3.4
+  supabase_flutter: 2.18.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  http: ^1.6.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -18,6 +18,7 @@ abstract final class AppRoutes {
   static const editProfile = '/profile/edit';
 
   static const Set<String> publicRoutes = <String>{
+    '/',
     splash,
     login,
     register,

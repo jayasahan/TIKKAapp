@@ -14,7 +14,7 @@ The MVP covers customer sign-in, browsing household services, submitting and tra
 
 ## Repository and implementation status
 
-Phase 01 architecture and Phase 02 backend setup artifacts are merged to `main` (Phase 02 PR #18). Phase 03 shared UI and navigation is being developed on `feature/shared-ui-navigation`; see [Shared UI and Navigation](docs/SHARED_UI.md) for the component and route catalog. The app entry previews a four-tab shell with feature placeholders. Authentication/session handling and feature screens are not implemented in this scaffold.
+Phase 01 architecture, Phase 02 backend setup artifacts (PR #18), and Phase 03 shared UI/navigation (PR #19) are merged to `main`. Phase 04 customer authentication is in progress on `feature/customer-authentication`; see [Authentication](docs/AUTHENTICATION.md) for local configuration and implemented flows and [Shared UI and Navigation](docs/SHARED_UI.md) for the component and route catalog. Service, booking, profile, tracking, and review screens remain with their assigned feature owners.
 
 The repository now contains Phase 02 migrations, seed data, and a backend specification. Confirm with Member 2 whether these have been applied to the actual Supabase project; repository files alone do not establish live project configuration. Remaining proposals in shared contracts still require the listed approvals. See [Development Plan](docs/DEVELOPMENT_PLAN.md) for owners, milestones, and phase progress.
 
@@ -23,6 +23,7 @@ The repository now contains Phase 02 migrations, seed data, and a backend specif
 - [Architecture](docs/ARCHITECTURE.md)
 - [Shared contracts and decision register](docs/SHARED_CONTRACTS.md)
 - [Backend specification](docs/BACKEND_SPECIFICATION.md)
+- [Authentication](docs/AUTHENTICATION.md)
 - [Shared UI and navigation](docs/SHARED_UI.md)
 - [Development phases and milestones](docs/DEVELOPMENT_PLAN.md)
 - [Figma design reference](docs/DESIGN_REFERENCE.md)

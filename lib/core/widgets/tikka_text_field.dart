@@ -16,6 +16,8 @@ class TikkaTextField extends StatefulWidget {
     this.onChanged,
     this.autofillHints,
     this.maxLines = 1,
+    this.height = 72,
+    this.onSubmitted,
   });
 
   final String label;
@@ -30,6 +32,8 @@ class TikkaTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final Iterable<String>? autofillHints;
   final int maxLines;
+  final double height;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   State<TikkaTextField> createState() => _TikkaTextFieldState();
@@ -61,7 +65,7 @@ class _TikkaTextFieldState extends State<TikkaTextField> {
       textField: true,
       liveRegion: hasError,
       child: SizedBox(
-        height: 72,
+        height: widget.height,
         child: Focus(
           onFocusChange: (hasFocus) {
             if (_hasFocus != hasFocus) {
@@ -97,6 +101,7 @@ class _TikkaTextFieldState extends State<TikkaTextField> {
                     keyboardType: widget.keyboardType,
                     textInputAction: widget.textInputAction,
                     onChanged: widget.onChanged,
+                    onSubmitted: widget.onSubmitted,
                     autofillHints: widget.autofillHints,
                     maxLines: widget.obscureText ? 1 : widget.maxLines,
                     textAlignVertical: TextAlignVertical.top,

@@ -64,11 +64,11 @@ Member 2 owns backend-enforced access. Use the signed-in Supabase identity for o
 
 ## Navigation and access boundaries
 
-`lib/app/router/app_routes.dart` centralizes route paths and parameter builders. `lib/app/router/app_router.dart` resolves them using Flutter's built-in `Navigator` and `MaterialPageRoute`. This is the Phase 03 implementation for review; the team has not decided whether to adopt a routing package such as go_router. Riverpod remains a state-management proposal; no state-management dependency was added.
+`lib/app/router/app_routes.dart` centralizes route paths and parameter builders. `lib/app/router/app_router.dart` resolves them using Flutter's built-in `Navigator` and `MaterialPageRoute`, merged in Phase 03. The team has not decided whether to adopt a routing package such as go_router. Riverpod remains a state-management proposal; no state-management dependency was added.
 
-The shared shell provides Home, Services, Requests, and Profile. `MyApp` currently enters `/home` as a development preview. Auth, service details, booking, request tracking, profile editing, and review routes currently display placeholders. The route map follows the proposal in [SHARED_CONTRACTS.md](SHARED_CONTRACTS.md); public/protected metadata there is not enforced by a guard.
+The shared shell provides Home, Services, Requests, and Profile. `MyApp`'s preview mode enters `/home`; Android startup uses the Phase 04 auth bootstrap. Login, registration, verification, and recovery screens are implemented. Service details, booking, request tracking, profile editing, and review routes still display placeholders. The route map follows [SHARED_CONTRACTS.md](SHARED_CONTRACTS.md).
 
-Phase 04 must define session-aware startup, public/protected route behavior, and logout navigation. The proposal is to restore a valid Supabase session to Home and send signed-out users through the public auth flow. Do not treat client-side protection as backend authorization. Booking routes are standalone, matching the Figma prototype's hidden bottom navigation in that flow.
+Phase 04 implements session-aware startup, public/protected route behavior, and logout navigation under the approved auth proposal; live Supabase settings remain unverified. The app restores a valid, email-verified Supabase session to Home and sends signed-out users through the public auth flow. Do not treat client-side protection as backend authorization. Booking routes are standalone, matching the Figma prototype's hidden bottom navigation in that flow.
 
 See [SHARED_UI.md](SHARED_UI.md) for the component catalog, current placeholders, route list, and shared tokens.
 
