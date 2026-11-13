@@ -12,16 +12,18 @@ The MVP covers customer sign-in, browsing household services, submitting and tra
 | ashuraweismann | Supabase backend, services, bookings, administrative testing, Android release preparation |
 | jayasahan | Profiles, tracking, ratings and reviews, QA, final documentation |
 
-## Repository status
+## Repository and implementation status
 
-The merged main branch contains the initial Flutter/Android scaffold, app theme, lint setup, and feature-directory placeholders. The app still uses the Flutter starter counter screen. Supabase project configuration and customer features are not implemented in this scaffold.
+Phase 01 architecture and Phase 02 backend setup artifacts are merged to `main` (Phase 02 PR #18). Phase 03 shared UI and navigation is being developed on `feature/shared-ui-navigation`; see [Shared UI and Navigation](docs/SHARED_UI.md) for the component and route catalog. The app entry previews a four-tab shell with feature placeholders. Authentication/session handling and feature screens are not implemented in this scaffold.
 
-Phase 01 documentation is prepared as a review draft on feature/app-foundation. Cross-feature contracts and technical recommendations in the documents are drafts until the team approves them. Do not treat the proposed router, state-management package, profile trigger, or booking schema as implemented.
+The repository now contains Phase 02 migrations, seed data, and a backend specification. Confirm with Member 2 whether these have been applied to the actual Supabase project; repository files alone do not establish live project configuration. Remaining proposals in shared contracts still require the listed approvals. See [Development Plan](docs/DEVELOPMENT_PLAN.md) for owners, milestones, and phase progress.
 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Shared contracts and decision register](docs/SHARED_CONTRACTS.md)
+- [Backend specification](docs/BACKEND_SPECIFICATION.md)
+- [Shared UI and navigation](docs/SHARED_UI.md)
 - [Development phases and milestones](docs/DEVELOPMENT_PLAN.md)
 - [Figma design reference](docs/DESIGN_REFERENCE.md)
 - [Repository instructions](AGENTS.md)
@@ -30,10 +32,10 @@ Phase 01 documentation is prepared as a review draft on feature/app-foundation. 
 
 - Flutter and Dart for Android.
 - Supabase Auth and PostgreSQL are the target backend.
-- Android application ID and namespace: com.tikka.app.
+- Android application ID and namespace: `com.tikka.app`.
 - Current Figma reference: [TIKKA Mobile App — Flutter MVP](https://www.figma.com/design/ZkL4pUNzpc3cJ1groSn2KT/TIKKA-Mobile-App-%E2%80%94-Flutter-MVP--Copy-?node-id=0-1&m=dev&t=mo3oijoMwRdsSb6r-1).
 
-Do not assume a Supabase project is configured. The app must use only client-safe credentials; service-role credentials must never be bundled into the Flutter app.
+Do not assume a Supabase project is configured. The app must use only client-safe credentials; service-role credentials must never be bundled in the Flutter app.
 
 ## Getting started
 

@@ -1,6 +1,6 @@
 # TIKKA Shared Contracts and Decision Register
 
-**Review state:** Phase 01 architecture established; Phase 02 backend schema, RLS, and storage contracts finalized by Member 2.
+**Review state:** Phase 01 architecture is merged and Phase 02 backend schema, RLS, and storage contracts were finalized by Member 2. Phase 03 route paths and shared UI are implemented on this branch; those implementation choices do not approve the remaining product proposals.
 
 ## Status key
 
@@ -111,7 +111,7 @@ Terminal states: `CONFIRMED`, `CANCELLED`, `REJECTED`.
 |---|---|---|---|---|
 | D01 | Feature-first architecture and feature ownership | Structure and owners in docs/ARCHITECTURE.md and docs/DEVELOPMENT_PLAN.md | All; Member 1 coordinates | Confirmed baseline |
 | D02 | Main customer navigation | Home, Services, Requests, Profile; directly visible in Figma | Member 1; Member 2 and Member 3 review their destinations | Observed; route contract pending |
-| D03 | Router package | Centralized router; consider go_router | Member 1 | Proposed; no dependency added |
+| D03 | Router implementation/package | Centralized route names and resolver; Phase 03 uses Flutter Navigator/MaterialPageRoute. Retaining this or adopting go_router remains open. | Member 1; all feature owners review integration | Built-in Navigator implemented on Phase 03 branch; long-term choice pending |
 | D04 | State management | Consider Riverpod; prefer the simplest state that meets needs | Member 1 | Proposed; no dependency added |
 | D05 | Auth provider and registration fields | Email/password; full name, email, phone, password, confirm password | Member 1; Member 2 configures backend | Proposed; approval pending |
 | D06 | Verification, recovery, Google auth | Email verification and password recovery; defer Google unless required | Member 1 and Member 2 | Proposed; screen designs missing |

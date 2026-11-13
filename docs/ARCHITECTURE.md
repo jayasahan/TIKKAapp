@@ -1,12 +1,10 @@
 # TIKKA Architecture
 
-**Status:** Phase 01 working proposal. Feature-first organization and member boundaries come from project requirements; routing, state management, and detailed boundaries below require team review.
+**Status:** Feature-first organization and team boundaries are confirmed project requirements. Shared UI and navigation are implemented on `feature/shared-ui-navigation` for review; long-term router, state-management, auth, and backend choices remain subject to the decision register.
 
 ## Product boundary
 
 TIKKA is a customer-facing Android app built with Flutter and Dart. Supabase Auth and PostgreSQL are the intended identity and backend services. The minimal authorized administrative testing workflow is outside the customer app and is owned by Member 2. There is no admin or worker mobile app in the MVP.
-
-The repository currently contains the Flutter scaffold, theme, lint setup, and empty feature-directory placeholders. The architecture below is a target structure, not a description of implemented features.
 
 ## Feature-first structure
 
@@ -15,44 +13,31 @@ lib/
   main.dart
   app/
     app.dart
-    router/
-      app_router.dart
-    theme/
-      app_theme.dart
+    navigation/       # shared four-destination shell
+    router/           # centralized route names and resolver
+    theme/            # shared tokens and Material theme
   core/
     config/
     constants/
     errors/
     utils/
-    widgets/
+    widgets/          # reusable controls, layout, and UI states
   features/
     auth/
-      data/
-      presentation/
     services/
-      data/
-      presentation/
     bookings/
-      data/
-      presentation/
     profile/
-      data/
-      presentation/
     tracking/
-      data/
-      presentation/
     reviews/
-      data/
-      presentation/
 ~~~
 
-Keep each feature self-contained. Add a domain or application layer only when the feature’s logic needs it; the MVP does not require creating boilerplate layers for every screen.
+App-wide setup, theme, and navigation belong under `lib/app`. Reusable cross-feature controls belong under `lib/core`. Feature-owned screens, repositories, and models belong under `lib/features/<feature>`. Add domain/application layers only when logic needs them; avoid boilerplate layers for every screen. The current Phase 03 app shell and route destinations are placeholders, not feature implementations.
 
-### Responsibility boundaries
+## Responsibility boundaries
 
 | Area | Owner | Boundary and handoff |
 |---|---|---|
-| App setup, shared architecture, router, shared UI, auth, integration | Member 1 — PrabodhaRanawaka | Owns lib/app and core contracts; publishes route, session, identity, and shared component interfaces. |
+| App setup, shared architecture, router, shared UI, auth, integration | Member 1 — PrabodhaRanawaka | Owns `lib/app` and core contracts; publishes route, session, identity, and shared component interfaces. |
 | Supabase backend, services, bookings, admin testing, Android release | Member 2 — ashuraweismann | Owns database schema, triggers, RLS and Storage policies, service catalog, booking persistence/status writes, and authorized backend test workflow. |
 | Profile, tracking, reviews, QA, final docs | Member 3 — jayasahan | Owns profile display/editing, request history/tracking presentation, customer reviews, and functional QA. |
 
@@ -62,7 +47,7 @@ Feature owners should not depend on another feature’s screen internals. Cross-
 
 **Confirmed project guidance:** keep UI and data access separate, use reusable shared UI, and follow feature-first organization.
 
-**Proposed convention:** screen/presentation code calls feature-owned repositories or services. Those boundaries encapsulate Supabase queries and map backend failures to a small set of user-readable results. The app uses one initialized client supplied to data-access code; widgets do not issue database queries directly. Avoid adding a general service locator, use-case layer, or cross-feature repository unless a demonstrated need justifies it.
+**Proposed convention:** screen/presentation code calls feature-owned repositories or services. Those boundaries encapsulate Supabase queries and map backend failures to a small set of user-readable results. Widgets do not issue database queries directly. Avoid a general service locator, use-case layer, or cross-feature repository unless a demonstrated need justifies it.
 
 Member 2 owns backend-enforced access. Use the signed-in Supabase identity for ownership checks, Row Level Security for tables, and Storage policies for uploaded booking photos. A client-side route guard is a navigation aid, not a security boundary. Never ship a service-role key in the Flutter app.
 
@@ -72,45 +57,27 @@ Member 2 owns backend-enforced access. Use the signed-in Supabase identity for o
 - Types and widgets: UpperCamelCase.
 - Methods, variables, and parameters: lowerCamelCase.
 - Keep one primary public widget or type per file where that improves discoverability; keep related private helpers close to their feature.
-- Prefer const widgets and constructors where practical. Dispose text controllers and subscriptions.
+- Prefer const widgets and constructors where practical. Dispose owned text controllers and subscriptions.
 - Keep validation at the form boundary and network/data failures at the repository boundary; display recoverable errors without crashing.
-- Use the shared theme and reusable controls rather than feature-specific copies.
-- Format with dart format lib test. Run flutter analyze and flutter test for approved implementation changes.
-- Do not add dependencies without an approved need. Phase 01 does not add packages.
+- Use shared theme and reusable controls rather than feature-specific copies.
+- Format with `dart format lib test`. Run `flutter analyze` and `flutter test` for implementation changes.
 
-## Navigation proposal
+## Navigation and access boundaries
 
-The Figma Prototype page starts the main flow at Splash, then taps to Login/Register; the Login action leads to Home. Home is the proposed authenticated landing destination. The four visible main destinations are Home, Services, Requests, and Profile. The design does not define returning-session behavior; bypassing sign-in when a valid session is restored is a proposal.
+`lib/app/router/app_routes.dart` centralizes route paths and parameter builders. `lib/app/router/app_router.dart` resolves them using Flutter's built-in `Navigator` and `MaterialPageRoute`. This is the Phase 03 implementation for review; the team has not decided whether to adopt a routing package such as go_router. Riverpod remains a state-management proposal; no state-management dependency was added.
 
-| Proposed route | Screen/purpose | Access |
-|---|---|---|
-| /splash | Figma entry screen | Public |
-| /auth/login | Email/password sign-in | Public |
-| /auth/register | Registration; screen not present in Figma | Public |
-| /auth/verify-email | Verification guidance; screen not present in Figma | Public |
-| /auth/forgot-password | Recovery request; link visible, screen absent | Public |
-| /auth/reset-password | Set a recovered password; screen absent | Public |
-| /home | Customer home and signed-in landing | Protected |
-| /services | Browse and search service categories | Protected |
-| /services/:serviceId | Service details | Protected |
-| /bookings/new/:serviceId | Booking step 1 | Protected |
-| /bookings/confirm | Review and confirm booking step 2 | Protected |
-| /requests | Request history and Active/Completed/Cancelled filters | Protected |
-| /requests/:requestId | Request tracking | Protected |
-| /profile | Profile summary and settings | Protected |
-| /profile/edit | Edit profile; screen absent in Figma | Protected |
-| /requests/:requestId/review | Review a completed request; screen absent in Figma | Protected |
+The shared shell provides Home, Services, Requests, and Profile. `MyApp` currently enters `/home` as a development preview. Auth, service details, booking, request tracking, profile editing, and review routes currently display placeholders. The route map follows the proposal in [SHARED_CONTRACTS.md](SHARED_CONTRACTS.md); public/protected metadata there is not enforced by a guard.
 
-The path names and guard rules are proposals for review, not implemented routes. Keep the four tab roots in a shared authenticated shell. The Figma booking steps omit that bottom navigation. Proposed startup behavior: restore the Supabase session; send a valid session to /home; otherwise show /splash and then /auth/login. A protected-route attempt without a session redirects to sign-in. Logout clears the session and replaces the protected navigation stack with the public auth entry. Exact logout destination and email-verification continuation need team approval.
+Phase 04 must define session-aware startup, public/protected route behavior, and logout navigation. The proposal is to restore a valid Supabase session to Home and send signed-out users through the public auth flow. Do not treat client-side protection as backend authorization. Booking routes are standalone, matching the Figma prototype's hidden bottom navigation in that flow.
 
-A centralized router is required by the Phase 01 issue. go_router is the current package proposal only; no routing package is installed in this phase. Riverpod is a state-management proposal only; no provider package is installed in this phase.
+See [SHARED_UI.md](SHARED_UI.md) for the component catalog, current placeholders, route list, and shared tokens.
 
 ## Authentication and integration boundary
 
-Member 1 owns the Flutter registration, sign-in, recovery, logout, and session presentation. The Auth user UUID is the proposed stable customer identifier; email and phone are contact attributes, not keys. Member 2 owns Supabase provider configuration and database security. Member 3 owns profile editing. See docs/SHARED_CONTRACTS.md for the full proposal and approval register.
+Member 1 owns Flutter registration, sign-in, recovery, logout, and session presentation. The Auth user UUID is the proposed stable customer identifier; email and phone are contact attributes, not keys. Member 2 owns Supabase provider configuration and database security. Member 3 owns profile editing. See `docs/SHARED_CONTRACTS.md` for the full proposal and approval register.
 
-The public app configuration must contain only client-safe Supabase values. Project URL/key delivery, auth provider settings, redirect configuration, and RLS are backend setup work and must be coordinated with Member 2.
+Public app configuration may contain only client-safe Supabase values. Project URL/key delivery, auth provider settings, redirect configuration, and RLS are backend setup work and must be coordinated with Member 2.
 
 ## Android networking requirement
 
-On the scaffold base, debug and profile manifests declare android.permission.INTERNET, while the main manifest does not. Supabase network access in release builds needs the merged release manifest to include INTERNET. Member 2 should account for this during backend integration and verify it in Phase 14 release preparation. This is a recorded implementation requirement; no manifest was changed in Phase 01.
+On the scaffold base, debug and profile manifests declare `android.permission.INTERNET`, while the main manifest does not. Supabase network access in release builds needs the merged release manifest to include INTERNET. Member 2 should account for this during backend integration and verify it in Phase 14 release preparation.
