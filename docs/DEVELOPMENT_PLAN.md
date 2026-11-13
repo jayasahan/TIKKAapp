@@ -1,6 +1,6 @@
 # TIKKA Development Plan
 
-**Planning state:** This phase map and owner list reflect the current project brief. Dates are targets; phase dependencies permit parallel work after shared contracts are agreed. The Phase 01 contract proposals remain pending until the team records approval in docs/SHARED_CONTRACTS.md.
+**Planning state:** Phase owners and milestone targets reflect the project brief. Dates are targets. Independent work may proceed after relevant shared contracts are agreed. Phase 01 and the Phase 02 backend deliverables are merged; unresolved product and integration decisions remain pending in `docs/SHARED_CONTRACTS.md`.
 
 ## Milestones
 
@@ -16,9 +16,9 @@
 
 | Phase | GitHub issue | Work item | Owner | Milestone | Handoff / scope |
 |---|---:|---|---|---|---|
-| 01 | #2 | Architecture and Shared Contracts | Member 1 — PrabodhaRanawaka | M1 | Document feature boundaries, shared contracts, routes, conventions, and agent guidance. Team agreement remains required. |
-| 02 | #3 | Supabase Backend Setup | Member 2 — ashuraweismann | M1 | Configure the project, schema, auth provider, policies, and storage based on approved contracts. |
-| 03 | #4 | Shared UI Components and Navigation | Member 1 — PrabodhaRanawaka | M1 | Build shared UI and route shell from approved Figma and architecture decisions. |
+| 01 | #2 | Architecture and Shared Contracts | Member 1 — PrabodhaRanawaka | M1 | Feature boundaries, shared contracts, routes, conventions, and agent guidance. Phase 01 PR merged; proposals remain reviewable. |
+| 02 | #3 | Supabase Backend Setup | Member 2 — ashuraweismann | M1 | Phase 02 schema/RLS/storage migrations, seed data, and specification merged in PR #18; verify deployment to the live Supabase project and auth provider configuration. |
+| 03 | #4 | Shared UI Components and Navigation | Member 1 — PrabodhaRanawaka | M1 | Build shared UI and route shell from Figma and reviewed architecture decisions. |
 | 04 | #5 | Customer Authentication | Member 1 — PrabodhaRanawaka | M2 | Implement approved login, registration, recovery, verification, and session behavior. |
 | 05 | #6 | Service Browsing and Details | Member 2 — ashuraweismann | M2 | Implement catalog browsing and service details. |
 | 06 | #7 | Customer Booking Flow | Member 2 — ashuraweismann | M2 | Implement approved booking fields, two-step confirmation, and optional photo upload. |
@@ -28,39 +28,44 @@
 | 10 | #11 | Admin and Backend Testing | Member 2 — ashuraweismann | M3 | Verify backend and use the approved authorized administrative testing workflow; no admin mobile app. |
 | 11 | #12 | Application Integration | Member 1 — PrabodhaRanawaka | M3 | Connect owned feature routes/contracts and resolve integration issues without taking over other features. |
 | 12 | #13 | Functional Testing | Member 3 — jayasahan | M3 | Run agreed end-to-end functional QA across the customer workflow. |
-| 13 | #14 | UI Consistency and Usability | Member 1 — PrabodhaRanawaka | M4 | Reconcile implemented screens against the accepted Figma design and shared components. |
+| 13 | #14 | UI Consistency and Usability | Member 1 — PrabodhaRanawaka | M4 | Reconcile implemented screens against accepted Figma and shared components. |
 | 14 | #15 | Android Release Build | Member 2 — ashuraweismann | M4 | Prepare and verify release configuration, permissions, signing, and Android build output. |
 | 15 | #16 | Final Documentation and Submission | Member 3 — jayasahan | M4 | Complete project report, evidence, and submission packaging. |
 
-## Phase 01 work plan
+## Phase 02 delivery status
 
-1. Review scaffold structure, dependencies, Figma, and current Git conventions. This read-only review is complete for the current Phase 01 worktree.
-2. Finalize and record feature boundaries, naming conventions, data-access separation, and integration points with all owners.
-3. Agree route names, four tab destinations, public/protected boundaries, session restoration, and the post-login landing screen.
-4. Agree auth fields/provider/verification/recovery and the Supabase UUID identity contract.
-5. Agree the logical profile contract and creation owner with Members 2 and 3.
-6. Agree the booking request payload, contact snapshots, photo path handoff, status lifecycle, transitions, cancellation rule, and review eligibility with Members 2 and 3.
-7. Add root AGENTS.md and update README plus architecture, contracts, design-reference, and development-plan docs.
-8. Run flutter analyze and flutter test. Review Phase 01 issue #2 acceptance criteria and prepare a linked PR only after the user approves the remote action.
+PR #18 is merged to `main` as commit `137cbc1`. The repository includes SQL migrations, an all-in-one setup script, seed data, `.env.example`, and `docs/BACKEND_SPECIFICATION.md`. This confirms the backend artifacts are in source control; it does not prove that a Supabase project was provisioned or that the migrations and Auth settings were applied there.
 
 ## Phase 01 acceptance checklist
 
-| Issue #2 criterion | Current Phase 01 worktree state |
+| Issue #2 criterion | State |
 |---|---|
-| Review existing Flutter structure and dependencies | Reviewed against scaffold; no package was added in this phase. |
-| Finalize feature-first structure | Target structure documented; detailed team approval still pending. |
-| Establish naming and coding standards | Draft conventions documented; team approval pending. |
-| Define routes and navigation structure | Route proposal documents Figma destinations and missing screens; team approval pending. |
-| Agree auth, identity, profile, booking, and status contracts | Proposals and responsible reviewers documented; agreement not claimed. |
-| Document team responsibilities and integration points | Included in architecture and phase assignment table. |
-| Root AGENTS.md available | Created on feature/app-foundation; not yet merged to main. |
-| Update architecture/development documentation | Drafts created on feature/app-foundation. |
-| Flutter analysis and tests pass | Pass: `flutter analyze` and `flutter test` both exited 0 on Flutter 3.47.6 / Dart 3.13.5. |
-| PR linked to issue #2 | Not created; user explicitly deferred PR creation. |
+| Review the Flutter structure and dependencies | Completed during Phase 01 review. |
+| Document feature-first structure and naming standards | Documented in `docs/ARCHITECTURE.md`; backend contracts were finalized in Phase 02, while auth/navigation proposals remain subject to team agreement. |
+| Document route, auth, identity, profile, booking, and status contracts | Recorded in `docs/SHARED_CONTRACTS.md` and `docs/DESIGN_REFERENCE.md`; Phase 02 backend contracts are confirmed, while auth/navigation proposals remain pending team approval. |
+| Document responsibilities and integration points | Completed in architecture and phase assignment tables. |
+| Add root `AGENTS.md` and project documentation | Merged to `main` with Phase 01. |
+| Run Flutter analysis and tests | Passed in Phase 01. |
+| Link and merge the Phase 01 PR | Merged by the user; issue #2 closed by the user. |
 
-## Explicit follow-up requirements
+## Phase 03 progress and acceptance checklist
 
-- Resolve missing Figma designs for registration, verification, password reset, profile editing, and customer reviews.
-- Member 2 must confirm the Supabase project, auth provider settings, schema, triggers, Row Level Security, Storage bucket, and authorized admin/testing mechanism.
-- The scaffold main manifest lacks INTERNET permission although debug and profile manifests include it. Member 2 should resolve and verify the merged release manifest during backend/release work; do not treat debug-only permission as release readiness.
-- Agree all proposed contracts before implementation phases consume them. Phase numbers provide recommended order, while independent feature work may proceed after relevant contracts are accepted.
+Phase 03 implementation and automated verification are complete on `feature/shared-ui-navigation`; team review is pending. See [SHARED_UI.md](SHARED_UI.md) for the route catalog, component usage, and current placeholder boundary.
+
+| Issue #4 criterion | State |
+|---|---|
+| Review Figma screens and shared design tokens | Completed from the updated Figma reference; design gaps and spacing discrepancy are documented. |
+| Apply shared colors, typography, and theme | Implemented in `AppTheme`; bundled Inter font and Figma loading SVG are registered; analysis passes. |
+| Add reusable buttons, input, app bar, and shared states | Implemented in `lib/core/widgets/`; analyzer passes and widget coverage checks field error/loading states. |
+| Add shared page layout and responsive customer shell | Implemented with a constrained content width and four-tab shell; widget tests pass. No Android device/emulator was detected for device preview. |
+| Centralize destinations and route names; add feature placeholders | Implemented with Flutter Navigator; widget tests verify auth and feature route placeholders. Route guards and feature screens remain Phase 04/feature-owner work. |
+| Replace the starter counter and add tests | Counter removed; widget tests pass for shell tabs, route placeholders, text-field error, and loading state. |
+| Update usage documentation | Added `docs/SHARED_UI.md` and updated README/architecture; documentation consistency review completed. |
+| `flutter analyze` and `flutter test` pass | Passed: no analyzer issues; all 5 widget tests passed. |
+
+## Follow-up requirements and blockers
+
+- Registration, verification, password reset, profile editing, and customer review screens are absent from Figma. Obtain designs or explicit product requirements before implementing them.
+- Phase 02 schema, triggers, RLS, storage policies, seed data, and backend specification are merged via PR #18. Confirm the migrations are applied to the actual Supabase project and verify Auth provider settings and the authorized admin/testing workflow.
+- The scaffold main manifest lacks INTERNET permission although debug and profile manifests include it. Member 2 should resolve and verify the merged release manifest during backend/release work.
+- Agree proposed cross-feature contracts before consuming them as business rules. Phase numbers provide a recommended sequence, while independent work may proceed after relevant contracts are accepted.

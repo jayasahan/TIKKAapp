@@ -11,6 +11,8 @@ Use these documents as the shared project references:
 - docs/SHARED_CONTRACTS.md: confirmed observations, proposed cross-feature contracts, and the decision register.
 - docs/DEVELOPMENT_PLAN.md: phases, milestones, owners, and acceptance tracking.
 - docs/DESIGN_REFERENCE.md: observed Figma screens, flows, and design system.
+- docs/SHARED_UI.md: Phase 03 shared widgets, route names, and usage.
+- docs/BACKEND_SPECIFICATION.md: Phase 02 schema, RLS, storage, and admin testing reference.
 
 These documents distinguish confirmed requirements and Figma observations from proposals awaiting team approval. Do not present a proposal as a team decision.
 
