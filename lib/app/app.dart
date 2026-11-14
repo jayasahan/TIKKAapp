@@ -4,6 +4,7 @@ import 'package:tikka/app/router/app_routes.dart';
 import 'package:tikka/app/theme/app_theme.dart';
 import 'package:tikka/features/auth/domain/auth_repository.dart';
 import 'package:tikka/features/auth/domain/auth_session_snapshot.dart';
+import 'package:tikka/features/bookings/domain/bookings_repository.dart';
 import 'package:tikka/features/services/domain/services_repository.dart';
 
 class MyApp extends StatelessWidget {
@@ -12,12 +13,14 @@ class MyApp extends StatelessWidget {
     this.authenticationEnabled = false,
     this.authRepository,
     this.servicesRepository,
+    this.bookingsRepository,
     this.configurationMessage,
   });
 
   final bool authenticationEnabled;
   final AuthRepository? authRepository;
   final ServicesRepository? servicesRepository;
+  final BookingsRepository? bookingsRepository;
   final String? configurationMessage;
 
   @override
@@ -31,6 +34,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
           settings,
           servicesRepository: servicesRepository,
+          bookingsRepository: bookingsRepository,
         ),
         onUnknownRoute: AppRouter.onUnknownRoute,
       );
@@ -68,6 +72,7 @@ class MyApp extends StatelessWidget {
               isPasswordRecovery: isPasswordRecovery,
               authRepository: authRepository,
               servicesRepository: servicesRepository,
+              bookingsRepository: bookingsRepository,
               configurationMessage: configurationMessage,
             ),
           ],
@@ -78,6 +83,7 @@ class MyApp extends StatelessWidget {
             isPasswordRecovery: isPasswordRecovery,
             authRepository: authRepository,
             servicesRepository: servicesRepository,
+            bookingsRepository: bookingsRepository,
             configurationMessage: configurationMessage,
           ),
           onUnknownRoute: AppRouter.onUnknownRoute,

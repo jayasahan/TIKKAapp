@@ -16,6 +16,11 @@ import 'package:tikka/features/services/domain/services_repository.dart';
 import 'package:tikka/features/services/presentation/home_screen.dart';
 import 'package:tikka/features/services/presentation/service_details_screen.dart';
 import 'package:tikka/features/services/presentation/services_screen.dart';
+import 'package:tikka/features/bookings/data/supabase_bookings_repository.dart';
+import 'package:tikka/features/bookings/domain/booking_draft.dart';
+import 'package:tikka/features/bookings/domain/bookings_repository.dart';
+import 'package:tikka/features/bookings/presentation/booking_confirmation_screen.dart';
+import 'package:tikka/features/bookings/presentation/booking_form_screen.dart';
 
 abstract final class AppRouter {
   static Route<dynamic> onGenerateRoute(
@@ -25,6 +30,7 @@ abstract final class AppRouter {
     bool isPasswordRecovery = false,
     AuthRepository? authRepository,
     ServicesRepository? servicesRepository,
+    BookingsRepository? bookingsRepository,
     String? configurationMessage,
   }) {
     final routeName = settings.name ?? AppRoutes.initial;
@@ -65,6 +71,8 @@ abstract final class AppRouter {
 
     final effectiveServicesRepo =
         servicesRepository ?? SupabaseServicesRepository();
+    final effectiveBookingsRepo =
+        bookingsRepository ?? SupabaseBookingsRepository();
 
     switch (path) {
       case '/':
@@ -186,11 +194,25 @@ abstract final class AppRouter {
           accountAction: _logoutAction(authenticationEnabled, authRepository),
         );
       case AppRoutes.bookingConfirmation:
-        return _placeholder(
-          settings,
-          title: 'Booking confirmation',
-          message:
-              'Booking screens will be added by the booking feature owner.',
+        final draft = settings.arguments is BookingDraft
+            ? settings.arguments! as BookingDraft
+            : BookingDraft(
+                serviceId: 'general',
+                serviceName: 'Service',
+                problemDescription: 'Review your request details',
+                serviceAddress: 'Service Address',
+                contactName: 'Customer',
+                contactPhone: 'Contact Number',
+                preferredDate: DateTime.now().add(const Duration(days: 1)),
+                preferredTime: '10:00 AM',
+              );
+        return MaterialPageRoute<void>(
+          settings: settings,
+          builder: (_) => BookingConfirmationScreen(
+            draft: draft,
+            bookingsRepository: effectiveBookingsRepo,
+            authRepository: authRepository,
+          ),
         );
       case AppRoutes.editProfile:
         return _placeholder(
@@ -215,10 +237,18 @@ abstract final class AppRouter {
     if (segments.length == 3 &&
         segments[0] == 'bookings' &&
         segments[1] == 'new') {
-      return _placeholder(
-        settings,
-        title: 'New booking',
-        message: 'The booking flow will be added by the booking feature owner.',
+      final serviceId = Uri.decodeComponent(segments[2]);
+      final initialDraft = settings.arguments is BookingDraft
+          ? settings.arguments! as BookingDraft
+          : null;
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => BookingFormScreen(
+          serviceId: serviceId,
+          servicesRepository: effectiveServicesRepo,
+          authRepository: authRepository,
+          initialDraft: initialDraft,
+        ),
       );
     }
     if (segments.length == 2 && segments.first == 'requests') {
