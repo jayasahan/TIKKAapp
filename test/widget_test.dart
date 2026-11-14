@@ -22,7 +22,7 @@ void main() {
     expect(find.byIcon(Icons.add), findsNothing);
   });
 
-  testWidgets('bottom navigation opens the selected placeholder', (
+  testWidgets('bottom navigation opens the selected destination', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MyApp());
@@ -30,30 +30,38 @@ void main() {
     await tester.tap(find.byKey(const ValueKey<String>('nav_services')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Services content is being prepared'), findsOneWidget);
+    expect(find.text('Choose what you need'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey<String>('nav_requests')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No requests yet'), findsOneWidget);
   });
 
-  testWidgets('feature and auth named routes resolve to placeholders', (
+  testWidgets('feature and auth named routes resolve properly', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MyApp());
 
     final navigator = Navigator.of(tester.element(find.text('Home').first));
     final routeCases = <MapEntry<String, String>>[
-      MapEntry<String, String>(AppRoutes.login, 'Sign in'),
-      MapEntry<String, String>(AppRoutes.register, 'Create account'),
-      MapEntry<String, String>(AppRoutes.verifyEmail, 'Verify email'),
-      MapEntry<String, String>(AppRoutes.forgotPassword, 'Forgot password'),
-      MapEntry<String, String>(AppRoutes.resetPassword, 'Reset password'),
+      const MapEntry<String, String>(AppRoutes.login, 'Sign in'),
+      const MapEntry<String, String>(AppRoutes.register, 'Create account'),
+      const MapEntry<String, String>(AppRoutes.verifyEmail, 'Verify email'),
+      const MapEntry<String, String>(
+        AppRoutes.forgotPassword,
+        'Forgot password',
+      ),
+      const MapEntry<String, String>(AppRoutes.resetPassword, 'Reset password'),
       MapEntry<String, String>(
-        AppRoutes.serviceDetails('plumbing'),
-        'Service details',
+        AppRoutes.serviceDetails('plumbing-general'),
+        'Plumbing',
       ),
       MapEntry<String, String>(
-        AppRoutes.createBooking('plumbing'),
+        AppRoutes.createBooking('plumbing-general'),
         'New booking',
       ),
-      MapEntry<String, String>(
+      const MapEntry<String, String>(
         AppRoutes.bookingConfirmation,
         'Booking confirmation',
       ),
@@ -61,17 +69,25 @@ void main() {
         AppRoutes.requestTracking('request-123'),
         'Request tracking',
       ),
-      MapEntry<String, String>(AppRoutes.editProfile, 'Edit profile'),
+      const MapEntry<String, String>(AppRoutes.editProfile, 'Edit profile'),
       MapEntry<String, String>(
         AppRoutes.writeReview('request-123'),
-        'Review a request',
+        'Submit review',
       ),
     ];
 
     for (final routeCase in routeCases) {
       unawaited(navigator.pushNamed<void>(routeCase.key));
       await tester.pumpAndSettle();
-      expect(find.text(routeCase.value), findsOneWidget, reason: routeCase.key);
+      if (routeCase.key.startsWith('/services/')) {
+        expect(find.text(routeCase.value), findsWidgets, reason: routeCase.key);
+      } else {
+        expect(
+          find.text(routeCase.value),
+          findsOneWidget,
+          reason: routeCase.key,
+        );
+      }
       unawaited(navigator.maybePop());
       await tester.pumpAndSettle();
     }
@@ -89,7 +105,7 @@ void main() {
               width: 330,
               child: TikkaTextField(
                 label: 'Email',
-                hintText: 'Enter your email',
+                hintText: 'Enter email',
                 errorText: 'invalid email',
               ),
             ),
@@ -106,12 +122,8 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        home: const Scaffold(body: TikkaLoadingState()),
-      ),
+      const MaterialApp(home: Scaffold(body: TikkaLoadingState())),
     );
-    await tester.pumpAndSettle();
 
     expect(find.text('Loading…'), findsOneWidget);
   });

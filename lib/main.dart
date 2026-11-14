@@ -4,12 +4,15 @@ import 'package:tikka/app/app.dart';
 import 'package:tikka/core/config/supabase_config.dart';
 import 'package:tikka/features/auth/data/supabase_auth_repository.dart';
 import 'package:tikka/features/auth/domain/auth_repository.dart';
+import 'package:tikka/features/services/data/supabase_services_repository.dart';
+import 'package:tikka/features/services/domain/services_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const config = SupabaseConfig.fromEnvironment;
   var configurationMessage = config.errorMessage;
   AuthRepository? authRepository;
+  ServicesRepository? servicesRepository;
 
   if (configurationMessage == null) {
     try {
@@ -21,15 +24,22 @@ Future<void> main() async {
         Supabase.instance.client,
         authRedirectUrl: config.authRedirectUrl,
       );
+      servicesRepository = SupabaseServicesRepository(
+        client: Supabase.instance.client,
+      );
     } on Object {
       configurationMessage = 'Supabase could not be initialized. Check the local URL and public anon key.';
     }
   }
 
+  // If Supabase was not initialized, servicesRepository defaults to seed data fallback
+  servicesRepository ??= SupabaseServicesRepository();
+
   runApp(
     MyApp(
       authenticationEnabled: true,
       authRepository: authRepository,
+      servicesRepository: servicesRepository,
       configurationMessage: configurationMessage,
     ),
   );

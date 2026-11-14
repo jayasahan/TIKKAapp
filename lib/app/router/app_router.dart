@@ -11,6 +11,11 @@ import 'package:tikka/features/auth/presentation/register_screen.dart';
 import 'package:tikka/features/auth/presentation/reset_password_screen.dart';
 import 'package:tikka/features/auth/presentation/splash_screen.dart';
 import 'package:tikka/features/auth/presentation/verify_email_screen.dart';
+import 'package:tikka/features/services/data/supabase_services_repository.dart';
+import 'package:tikka/features/services/domain/services_repository.dart';
+import 'package:tikka/features/services/presentation/home_screen.dart';
+import 'package:tikka/features/services/presentation/service_details_screen.dart';
+import 'package:tikka/features/services/presentation/services_screen.dart';
 
 abstract final class AppRouter {
   static Route<dynamic> onGenerateRoute(
@@ -19,6 +24,7 @@ abstract final class AppRouter {
     bool isAuthenticated = false,
     bool isPasswordRecovery = false,
     AuthRepository? authRepository,
+    ServicesRepository? servicesRepository,
     String? configurationMessage,
   }) {
     final routeName = settings.name ?? AppRoutes.initial;
@@ -56,6 +62,9 @@ abstract final class AppRouter {
         );
       }
     }
+
+    final effectiveServicesRepo =
+        servicesRepository ?? SupabaseServicesRepository();
 
     switch (path) {
       case '/':
@@ -144,16 +153,25 @@ abstract final class AppRouter {
           message: 'Password reset will be implemented with customer authentication.',
         );
       case AppRoutes.home:
+        final email = authRepository?.currentSnapshot?.email;
+        final namePreview = email != null && email.contains('@')
+            ? email.split('@').first
+            : null;
         return _shell(
           settings,
           CustomerDestination.home,
           accountAction: _logoutAction(authenticationEnabled, authRepository),
+          child: HomeScreen(
+            repository: effectiveServicesRepo,
+            customerName: namePreview,
+          ),
         );
       case AppRoutes.services:
         return _shell(
           settings,
           CustomerDestination.services,
           accountAction: _logoutAction(authenticationEnabled, authRepository),
+          child: ServicesScreen(repository: effectiveServicesRepo),
         );
       case AppRoutes.requests:
         return _shell(
@@ -185,10 +203,13 @@ abstract final class AppRouter {
 
     final segments = uri?.pathSegments ?? const <String>[];
     if (segments.length == 2 && segments.first == 'services') {
-      return _placeholder(
-        settings,
-        title: 'Service details',
-        message: 'Service details will be added by the services feature owner.',
+      final serviceId = Uri.decodeComponent(segments[1]);
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => ServiceDetailsScreen(
+          serviceId: serviceId,
+          repository: effectiveServicesRepo,
+        ),
       );
     }
     if (segments.length == 3 &&
@@ -200,16 +221,6 @@ abstract final class AppRouter {
         message: 'The booking flow will be added by the booking feature owner.',
       );
     }
-    if (segments.length == 3 &&
-        segments[0] == 'requests' &&
-        segments[2] == 'review') {
-      return _placeholder(
-        settings,
-        title: 'Review a request',
-        message:
-            'Ratings and reviews will be added by the review feature owner.',
-      );
-    }
     if (segments.length == 2 && segments.first == 'requests') {
       return _placeholder(
         settings,
@@ -218,12 +229,17 @@ abstract final class AppRouter {
             'Request tracking will be added by the tracking feature owner.',
       );
     }
+    if (segments.length == 3 &&
+        segments[0] == 'requests' &&
+        segments[2] == 'review') {
+      return _placeholder(
+        settings,
+        title: 'Submit review',
+        message: 'Reviews will be added by the review feature owner.',
+      );
+    }
 
-    return _placeholder(
-      settings,
-      title: 'Page not found',
-      message: 'This route is not part of the TIKKA application.',
-    );
+    return onUnknownRoute(settings);
   }
 
   static Route<dynamic> onUnknownRoute(RouteSettings settings) => _placeholder(
@@ -236,11 +252,15 @@ abstract final class AppRouter {
     RouteSettings settings,
     CustomerDestination destination, {
     Widget? accountAction,
+    Widget? child,
   }) {
     return MaterialPageRoute<void>(
       settings: settings,
-      builder: (_) =>
-          AppShell(destination: destination, accountAction: accountAction),
+      builder: (_) => AppShell(
+        destination: destination,
+        accountAction: accountAction,
+        child: child,
+      ),
     );
   }
 
