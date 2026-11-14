@@ -21,6 +21,10 @@ import 'package:tikka/features/bookings/domain/booking_draft.dart';
 import 'package:tikka/features/bookings/domain/bookings_repository.dart';
 import 'package:tikka/features/bookings/presentation/booking_confirmation_screen.dart';
 import 'package:tikka/features/bookings/presentation/booking_form_screen.dart';
+import 'package:tikka/features/profile/domain/profile_repository.dart';
+import 'package:tikka/features/profile/domain/customer_profile.dart';
+import 'package:tikka/features/profile/presentation/edit_profile_screen.dart';
+import 'package:tikka/features/profile/presentation/profile_screen.dart';
 
 abstract final class AppRouter {
   static Route<dynamic> onGenerateRoute(
@@ -31,6 +35,7 @@ abstract final class AppRouter {
     AuthRepository? authRepository,
     ServicesRepository? servicesRepository,
     BookingsRepository? bookingsRepository,
+    ProfileRepository? profileRepository,
     String? configurationMessage,
   }) {
     final routeName = settings.name ?? AppRoutes.initial;
@@ -73,6 +78,7 @@ abstract final class AppRouter {
         servicesRepository ?? SupabaseServicesRepository();
     final effectiveBookingsRepo =
         bookingsRepository ?? SupabaseBookingsRepository();
+    final effectiveProfileRepo = profileRepository;
 
     switch (path) {
       case '/':
@@ -188,10 +194,22 @@ abstract final class AppRouter {
           accountAction: _logoutAction(authenticationEnabled, authRepository),
         );
       case AppRoutes.profile:
+        if (effectiveProfileRepo == null || authRepository == null) {
+          return _placeholder(
+            settings,
+            title: 'Profile unavailable',
+            message:
+                configurationMessage ??
+                'Profile services are not configured yet.',
+          );
+        }
         return _shell(
           settings,
           CustomerDestination.profile,
-          accountAction: _logoutAction(authenticationEnabled, authRepository),
+          child: ProfileScreen(
+            repository: effectiveProfileRepo,
+            authRepository: authRepository,
+          ),
         );
       case AppRoutes.bookingConfirmation:
         final draft = settings.arguments is BookingDraft
@@ -215,11 +233,23 @@ abstract final class AppRouter {
           ),
         );
       case AppRoutes.editProfile:
-        return _placeholder(
-          settings,
-          title: 'Edit profile',
-          message:
-              'Profile editing will be added by the profile feature owner.',
+        if (effectiveProfileRepo == null) {
+          return _placeholder(
+            settings,
+            title: 'Edit profile',
+            message:
+                configurationMessage ??
+                'Profile services are not configured yet.',
+          );
+        }
+        return MaterialPageRoute<void>(
+          settings: settings,
+          builder: (_) => EditProfileScreen(
+            repository: effectiveProfileRepo,
+            initialProfile: settings.arguments is CustomerProfile
+                ? settings.arguments! as CustomerProfile
+                : null,
+          ),
         );
     }
 
