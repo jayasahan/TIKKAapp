@@ -4,6 +4,8 @@ import 'package:tikka/app/app.dart';
 import 'package:tikka/core/config/supabase_config.dart';
 import 'package:tikka/features/auth/data/supabase_auth_repository.dart';
 import 'package:tikka/features/auth/domain/auth_repository.dart';
+import 'package:tikka/features/bookings/data/supabase_bookings_repository.dart';
+import 'package:tikka/features/bookings/domain/bookings_repository.dart';
 import 'package:tikka/features/services/data/supabase_services_repository.dart';
 import 'package:tikka/features/services/domain/services_repository.dart';
 
@@ -13,6 +15,7 @@ Future<void> main() async {
   var configurationMessage = config.errorMessage;
   AuthRepository? authRepository;
   ServicesRepository? servicesRepository;
+  BookingsRepository? bookingsRepository;
 
   if (configurationMessage == null) {
     try {
@@ -27,19 +30,24 @@ Future<void> main() async {
       servicesRepository = SupabaseServicesRepository(
         client: Supabase.instance.client,
       );
+      bookingsRepository = SupabaseBookingsRepository(
+        client: Supabase.instance.client,
+      );
     } on Object {
       configurationMessage = 'Supabase could not be initialized. Check the local URL and public anon key.';
     }
   }
 
-  // If Supabase was not initialized, servicesRepository defaults to seed data fallback
+  // If Supabase was not initialized, repositories default to in-memory/seed data fallback
   servicesRepository ??= SupabaseServicesRepository();
+  bookingsRepository ??= SupabaseBookingsRepository();
 
   runApp(
     MyApp(
       authenticationEnabled: true,
       authRepository: authRepository,
       servicesRepository: servicesRepository,
+      bookingsRepository: bookingsRepository,
       configurationMessage: configurationMessage,
     ),
   );

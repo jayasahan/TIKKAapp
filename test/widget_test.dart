@@ -59,11 +59,11 @@ void main() {
       ),
       MapEntry<String, String>(
         AppRoutes.createBooking('plumbing-general'),
-        'New booking',
+        'Request Plumbing',
       ),
       const MapEntry<String, String>(
         AppRoutes.bookingConfirmation,
-        'Booking confirmation',
+        'Review request',
       ),
       MapEntry<String, String>(
         AppRoutes.requestTracking('request-123'),
