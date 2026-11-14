@@ -11,5 +11,9 @@ abstract interface class BookingsRepository {
 
   Future<Booking?> getBookingById(String bookingId);
 
+  Future<List<Booking>> getCurrentCustomerBookings();
+
+  Future<Booking?> getCurrentCustomerBookingById(String bookingId);
+
   Future<void> cancelBooking(String bookingId, {String? reason});
 }

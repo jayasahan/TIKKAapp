@@ -21,6 +21,8 @@ import 'package:tikka/features/bookings/domain/booking_draft.dart';
 import 'package:tikka/features/bookings/domain/bookings_repository.dart';
 import 'package:tikka/features/bookings/presentation/booking_confirmation_screen.dart';
 import 'package:tikka/features/bookings/presentation/booking_form_screen.dart';
+import 'package:tikka/features/bookings/presentation/booking_history_screen.dart';
+import 'package:tikka/features/bookings/presentation/booking_tracking_screen.dart';
 import 'package:tikka/features/profile/domain/profile_repository.dart';
 import 'package:tikka/features/profile/domain/customer_profile.dart';
 import 'package:tikka/features/profile/presentation/edit_profile_screen.dart';
@@ -188,10 +190,23 @@ abstract final class AppRouter {
           child: ServicesScreen(repository: effectiveServicesRepo),
         );
       case AppRoutes.requests:
+        if (!authenticationEnabled) {
+          return _shell(settings, CustomerDestination.requests);
+        }
+        if (authRepository == null) {
+          return _placeholder(
+            settings,
+            title: 'Requests unavailable',
+            message:
+                configurationMessage ??
+                'Request services are not configured yet.',
+          );
+        }
         return _shell(
           settings,
           CustomerDestination.requests,
           accountAction: _logoutAction(authenticationEnabled, authRepository),
+          child: BookingHistoryScreen(repository: effectiveBookingsRepo),
         );
       case AppRoutes.profile:
         if (effectiveProfileRepo == null || authRepository == null) {
@@ -282,11 +297,20 @@ abstract final class AppRouter {
       );
     }
     if (segments.length == 2 && segments.first == 'requests') {
-      return _placeholder(
-        settings,
-        title: 'Request tracking',
-        message:
-            'Request tracking will be added by the tracking feature owner.',
+      if (!authenticationEnabled) {
+        return _placeholder(
+          settings,
+          title: 'Request tracking',
+          message:
+              'Request tracking will be added by the tracking feature owner.',
+        );
+      }
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => BookingTrackingScreen(
+          bookingId: Uri.decodeComponent(segments[1]),
+          repository: effectiveBookingsRepo,
+        ),
       );
     }
     if (segments.length == 3 &&

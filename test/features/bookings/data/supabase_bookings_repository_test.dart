@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tikka/features/bookings/data/supabase_bookings_repository.dart';
 import 'package:tikka/features/bookings/domain/booking_draft.dart';
+import 'package:tikka/features/bookings/domain/bookings_failure.dart';
 
 void main() {
   group('SupabaseBookingsRepository', () {
@@ -138,5 +140,22 @@ void main() {
       expect(validDraft.isValid, isTrue);
       expect(validDraft.validate().isEmpty, isTrue);
     });
+
+    test(
+      'authenticated booking retrieval does not accept a supplied customer id',
+      () async {
+        final client = SupabaseClient(
+          'https://tikka-test.supabase.co',
+          'test-anon-key',
+        );
+        final securedRepository = SupabaseBookingsRepository(client: client);
+
+        await expectLater(
+          securedRepository.getCustomerBookings('another-customer'),
+          throwsA(isA<BookingsFailure>()),
+        );
+        await client.dispose();
+      },
+    );
   });
 }
