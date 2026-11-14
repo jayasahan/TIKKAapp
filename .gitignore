@@ -55,3 +55,8 @@ config/supabase.local.json
 *.jks
 *.keystore
 key.properties
+
+
+AGENTS.md
+CLAUDE.md
+GEMINI.md
