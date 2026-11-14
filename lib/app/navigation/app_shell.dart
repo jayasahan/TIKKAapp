@@ -7,37 +7,47 @@ import 'package:tikka/core/widgets/tikka_bottom_navigation.dart';
 import 'package:tikka/core/widgets/tikka_states.dart';
 
 class AppShell extends StatelessWidget {
-  const AppShell({super.key, required this.destination, this.accountAction});
+  const AppShell({
+    super.key,
+    required this.destination,
+    this.accountAction,
+    this.child,
+  });
 
   final CustomerDestination destination;
   final Widget? accountAction;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TikkaAppBar(eyebrow: 'TIKKA', title: destination.label),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.large),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TikkaEmptyState(
-                  title: destination.placeholderTitle,
-                  message: destination.placeholderMessage,
+      body:
+          child ??
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.large,
                 ),
-                if (destination == CustomerDestination.profile &&
-                    accountAction != null) ...<Widget>[
-                  const SizedBox(height: AppSpacing.medium),
-                  accountAction!,
-                ],
-              ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TikkaEmptyState(
+                      title: destination.placeholderTitle,
+                      message: destination.placeholderMessage,
+                    ),
+                    if (destination == CustomerDestination.profile &&
+                        accountAction != null) ...<Widget>[
+                      const SizedBox(height: AppSpacing.medium),
+                      accountAction!,
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
