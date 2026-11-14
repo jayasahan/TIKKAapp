@@ -27,6 +27,8 @@ import 'package:tikka/features/profile/domain/profile_repository.dart';
 import 'package:tikka/features/profile/domain/customer_profile.dart';
 import 'package:tikka/features/profile/presentation/edit_profile_screen.dart';
 import 'package:tikka/features/profile/presentation/profile_screen.dart';
+import 'package:tikka/features/reviews/domain/reviews_repository.dart';
+import 'package:tikka/features/reviews/presentation/review_screen.dart';
 
 abstract final class AppRouter {
   static Route<dynamic> onGenerateRoute(
@@ -38,6 +40,7 @@ abstract final class AppRouter {
     ServicesRepository? servicesRepository,
     BookingsRepository? bookingsRepository,
     ProfileRepository? profileRepository,
+    ReviewsRepository? reviewsRepository,
     String? configurationMessage,
   }) {
     final routeName = settings.name ?? AppRoutes.initial;
@@ -81,6 +84,7 @@ abstract final class AppRouter {
     final effectiveBookingsRepo =
         bookingsRepository ?? SupabaseBookingsRepository();
     final effectiveProfileRepo = profileRepository;
+    final effectiveReviewsRepo = reviewsRepository;
 
     switch (path) {
       case '/':
@@ -316,10 +320,21 @@ abstract final class AppRouter {
     if (segments.length == 3 &&
         segments[0] == 'requests' &&
         segments[2] == 'review') {
-      return _placeholder(
-        settings,
-        title: 'Submit review',
-        message: 'Reviews will be added by the review feature owner.',
+      if (!authenticationEnabled || effectiveReviewsRepo == null) {
+        return _placeholder(
+          settings,
+          title: 'Submit review',
+          message:
+              configurationMessage ?? 'Review services are not configured yet.',
+        );
+      }
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => ReviewScreen(
+          bookingId: Uri.decodeComponent(segments[1]),
+          bookingsRepository: effectiveBookingsRepo,
+          reviewsRepository: effectiveReviewsRepo,
+        ),
       );
     }
 

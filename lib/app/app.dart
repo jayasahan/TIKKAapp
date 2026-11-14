@@ -7,6 +7,7 @@ import 'package:tikka/features/auth/domain/auth_session_snapshot.dart';
 import 'package:tikka/features/bookings/domain/bookings_repository.dart';
 import 'package:tikka/features/services/domain/services_repository.dart';
 import 'package:tikka/features/profile/domain/profile_repository.dart';
+import 'package:tikka/features/reviews/domain/reviews_repository.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     this.servicesRepository,
     this.bookingsRepository,
     this.profileRepository,
+    this.reviewsRepository,
     this.configurationMessage,
   });
 
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
   final ServicesRepository? servicesRepository;
   final BookingsRepository? bookingsRepository;
   final ProfileRepository? profileRepository;
+  final ReviewsRepository? reviewsRepository;
   final String? configurationMessage;
 
   @override
@@ -39,6 +42,7 @@ class MyApp extends StatelessWidget {
           servicesRepository: servicesRepository,
           bookingsRepository: bookingsRepository,
           profileRepository: profileRepository,
+          reviewsRepository: reviewsRepository,
         ),
         onUnknownRoute: AppRouter.onUnknownRoute,
       );
@@ -78,6 +82,7 @@ class MyApp extends StatelessWidget {
               servicesRepository: servicesRepository,
               bookingsRepository: bookingsRepository,
               profileRepository: profileRepository,
+              reviewsRepository: reviewsRepository,
               configurationMessage: configurationMessage,
             ),
           ],
@@ -90,6 +95,7 @@ class MyApp extends StatelessWidget {
             servicesRepository: servicesRepository,
             bookingsRepository: bookingsRepository,
             profileRepository: profileRepository,
+            reviewsRepository: reviewsRepository,
             configurationMessage: configurationMessage,
           ),
           onUnknownRoute: AppRouter.onUnknownRoute,

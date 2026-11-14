@@ -10,6 +10,8 @@ import 'package:tikka/features/services/data/supabase_services_repository.dart';
 import 'package:tikka/features/services/domain/services_repository.dart';
 import 'package:tikka/features/profile/data/supabase_profile_repository.dart';
 import 'package:tikka/features/profile/domain/profile_repository.dart';
+import 'package:tikka/features/reviews/data/supabase_reviews_repository.dart';
+import 'package:tikka/features/reviews/domain/reviews_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,7 @@ Future<void> main() async {
   ServicesRepository? servicesRepository;
   BookingsRepository? bookingsRepository;
   ProfileRepository? profileRepository;
+  ReviewsRepository? reviewsRepository;
 
   if (configurationMessage == null) {
     try {
@@ -37,6 +40,7 @@ Future<void> main() async {
         client: Supabase.instance.client,
       );
       profileRepository = SupabaseProfileRepository(Supabase.instance.client);
+      reviewsRepository = SupabaseReviewsRepository(Supabase.instance.client);
     } on Object {
       configurationMessage = 'Supabase could not be initialized. Check the local URL and public anon key.';
     }
@@ -53,6 +57,7 @@ Future<void> main() async {
       servicesRepository: servicesRepository,
       bookingsRepository: bookingsRepository,
       profileRepository: profileRepository,
+      reviewsRepository: reviewsRepository,
       configurationMessage: configurationMessage,
     ),
   );
