@@ -1,6 +1,6 @@
 # TIKKA Development Plan
 
-**Planning state:** Phase owners and milestone targets reflect the project brief. Dates are targets. Independent work may proceed after relevant shared contracts are agreed. Phase 01 and the Phase 02 backend deliverables are merged; unresolved product and integration decisions remain pending in `docs/SHARED_CONTRACTS.md`.
+**Planning state:** Phase owners and milestone targets reflect the project brief. Dates are targets. Phase 01–03 are merged; Phase 04 authentication is in progress on `feature/customer-authentication` under the approved auth proposals. Live Supabase Auth configuration remains unverified.
 
 ## Milestones
 
@@ -18,8 +18,8 @@
 |---|---:|---|---|---|---|
 | 01 | #2 | Architecture and Shared Contracts | Member 1 — PrabodhaRanawaka | M1 | Feature boundaries, shared contracts, routes, conventions, and agent guidance. Phase 01 PR merged; proposals remain reviewable. |
 | 02 | #3 | Supabase Backend Setup | Member 2 — ashuraweismann | M1 | Phase 02 schema/RLS/storage migrations, seed data, and specification merged in PR #18; verify deployment to the live Supabase project and auth provider configuration. |
-| 03 | #4 | Shared UI Components and Navigation | Member 1 — PrabodhaRanawaka | M1 | Build shared UI and route shell from Figma and reviewed architecture decisions. |
-| 04 | #5 | Customer Authentication | Member 1 — PrabodhaRanawaka | M2 | Implement approved login, registration, recovery, verification, and session behavior. |
+| 03 | #4 | Shared UI Components and Navigation | Member 1 — PrabodhaRanawaka | M1 | Implemented and merged in PR #19; no Android device/emulator was available for on-device preview. |
+| 04 | #5 | Customer Authentication | Member 1 — PrabodhaRanawaka | M2 | Implementation and local verification complete on `feature/customer-authentication`; analyzer and all 13 widget/repository tests pass. Live Auth settings and design alignment remain pending. |
 | 05 | #6 | Service Browsing and Details | Member 2 — ashuraweismann | M2 | Implement catalog browsing and service details. |
 | 06 | #7 | Customer Booking Flow | Member 2 — ashuraweismann | M2 | Implement approved booking fields, two-step confirmation, and optional photo upload. |
 | 07 | #8 | Customer Profile Management | Member 3 — jayasahan | M2 | Implement approved profile view/edit contract. |
@@ -42,7 +42,7 @@ PR #18 is merged to `main` as commit `137cbc1`. The repository includes SQL migr
 |---|---|
 | Review the Flutter structure and dependencies | Completed during Phase 01 review. |
 | Document feature-first structure and naming standards | Documented in `docs/ARCHITECTURE.md`; backend contracts were finalized in Phase 02, while auth/navigation proposals remain subject to team agreement. |
-| Document route, auth, identity, profile, booking, and status contracts | Recorded in `docs/SHARED_CONTRACTS.md` and `docs/DESIGN_REFERENCE.md`; Phase 02 backend contracts are confirmed, while auth/navigation proposals remain pending team approval. |
+| Document route, auth, identity, profile, booking, and status contracts | Recorded in `docs/SHARED_CONTRACTS.md` and `docs/DESIGN_REFERENCE.md`; Phase 02 backend contracts are confirmed, and auth proposals are approved for Member 1's implementation while live project settings remain pending. |
 | Document responsibilities and integration points | Completed in architecture and phase assignment tables. |
 | Add root `AGENTS.md` and project documentation | Merged to `main` with Phase 01. |
 | Run Flutter analysis and tests | Passed in Phase 01. |
@@ -50,7 +50,7 @@ PR #18 is merged to `main` as commit `137cbc1`. The repository includes SQL migr
 
 ## Phase 03 progress and acceptance checklist
 
-Phase 03 implementation and automated verification are complete on `feature/shared-ui-navigation`; team review is pending. See [SHARED_UI.md](SHARED_UI.md) for the route catalog, component usage, and current placeholder boundary.
+Phase 03 implementation and automated verification are complete and merged in PR #19. See [SHARED_UI.md](SHARED_UI.md) for the route catalog, component usage, and current placeholder boundary.
 
 | Issue #4 criterion | State |
 |---|---|
@@ -65,7 +65,7 @@ Phase 03 implementation and automated verification are complete on `feature/shar
 
 ## Follow-up requirements and blockers
 
-- Registration, verification, password reset, profile editing, and customer review screens are absent from Figma. Obtain designs or explicit product requirements before implementing them.
+- Registration, verification, and password reset screens are absent from Figma; Phase 04 implements them as drafts from the approved proposals, pending design alignment. Profile editing and customer review designs remain open for their owners.
 - Phase 02 schema, triggers, RLS, storage policies, seed data, and backend specification are merged via PR #18. Confirm the migrations are applied to the actual Supabase project and verify Auth provider settings and the authorized admin/testing workflow.
-- The scaffold main manifest lacks INTERNET permission although debug and profile manifests include it. Member 2 should resolve and verify the merged release manifest during backend/release work.
+- Phase 04 added INTERNET permission to the main manifest for Supabase networking. Member 2 should verify it in the final merged release manifest.
 - Agree proposed cross-feature contracts before consuming them as business rules. Phase numbers provide a recommended sequence, while independent work may proceed after relevant contracts are accepted.

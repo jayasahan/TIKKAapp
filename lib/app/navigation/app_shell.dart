@@ -7,9 +7,10 @@ import 'package:tikka/core/widgets/tikka_bottom_navigation.dart';
 import 'package:tikka/core/widgets/tikka_states.dart';
 
 class AppShell extends StatelessWidget {
-  const AppShell({super.key, required this.destination});
+  const AppShell({super.key, required this.destination, this.accountAction});
 
   final CustomerDestination destination;
+  final Widget? accountAction;
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +21,19 @@ class AppShell extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 560),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.large),
-            child: TikkaEmptyState(
-              title: destination.placeholderTitle,
-              message: destination.placeholderMessage,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TikkaEmptyState(
+                  title: destination.placeholderTitle,
+                  message: destination.placeholderMessage,
+                ),
+                if (destination == CustomerDestination.profile &&
+                    accountAction != null) ...<Widget>[
+                  const SizedBox(height: AppSpacing.medium),
+                  accountAction!,
+                ],
+              ],
             ),
           ),
         ),

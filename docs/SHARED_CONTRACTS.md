@@ -1,6 +1,6 @@
 # TIKKA Shared Contracts and Decision Register
 
-**Review state:** Phase 01 architecture is merged and Phase 02 backend schema, RLS, and storage contracts were finalized by Member 2. Phase 03 route paths and shared UI are implemented on this branch; those implementation choices do not approve the remaining product proposals.
+**Review state:** Phase 01 architecture, Phase 02 backend artifacts, and Phase 03 shared UI/navigation are merged. The project owner approved the documented authentication proposals for Member 1's Phase 04 implementation on 13 November 2026; the team's live Supabase Auth settings still need confirmation.
 
 ## Status key
 
@@ -22,16 +22,16 @@
 
 ## Authentication contract proposal
 
-**Proposed, pending team approval.**
+**Approved for Member 1-owned Phase 04 implementation by the project owner on 13 November 2026.** The registration and recovery layouts are implementation drafts because those screens are absent from Figma.
 
 - Provider: Supabase Auth with email and password.
 - Registration inputs: full name, email, phone number, password, and confirm password. Confirm password is client-side validation only and is never sent to Supabase.
-- Email verification is enabled. Until the email is verified and a usable session is established, the app shows a verification-pending state. The screen and exact SDK behavior need confirmation.
-- Password recovery is supported. The Figma screen includes a Forgot password link but no recovery form or completion screen.
-- Google sign-in is deferred unless the team confirms it is required. The Figma button is visible but has no prototype interaction.
+- Email verification is required. The app shows a verification-pending state and does not treat an unverified account as authenticated. Member 2 must confirm that email confirmation is enabled in the live Supabase project.
+- Password recovery is supported. The Figma screen includes a Forgot password link but no recovery or completion screen; the implementation is a draft pending design alignment.
+- Google sign-in is deferred. The Figma button is visible but has no prototype interaction.
 - Persist sessions using the Supabase Flutter SDK session behavior; do not hand-roll token storage.
-- On startup, restore a valid session and route to Home. Without a valid session, use the public splash/auth path.
-- Logout clears the Supabase session and replaces the protected navigation stack with the public auth entry. The exact return screen is pending.
+- On startup, restore a valid, email-verified session and route to Home. Without one, use the public splash/auth path.
+- Logout clears the Supabase session and replaces the protected navigation stack with the public login flow.
 - Map recoverable auth failures to inline or otherwise user-readable messages. Do not expose raw credentials or log passwords/tokens.
 
 ## Customer identity and profile proposal
@@ -100,7 +100,8 @@ Terminal states: `CONFIRMED`, `CANCELLED`, `REJECTED`.
 
 ## Supabase and security conventions
 
-- The Flutter app uses only client-safe Supabase configuration (`SUPABASE_URL` and `SUPABASE_ANON_KEY`). Never bundle the service-role key.
+- The Flutter app uses only client-safe Supabase configuration (`SUPABASE_URL` and `SUPABASE_ANON_KEY`). Never bundle the service-role key. Local setup is documented in `docs/AUTHENTICATION.md`.
+- The Android auth callback is `tikka://auth-callback`; Member 2 must add it to the live Supabase project's allowed redirect URLs and verify the email confirmation and recovery email settings.
 - Row Level Security (RLS) is enabled on all tables (`profiles`, `service_categories`, `services`, `bookings`, `reviews`).
 - Storage bucket `booking-photos` is configured with user-scoped RLS (`(storage.foldername(name))[1] = auth.uid()::text`).
 - No administrative portal inside the mobile app; administrative testing is conducted via Supabase Studio or authorized SQL helpers (documented in `docs/BACKEND_SPECIFICATION.md`).
@@ -113,9 +114,9 @@ Terminal states: `CONFIRMED`, `CANCELLED`, `REJECTED`.
 | D02 | Main customer navigation | Home, Services, Requests, Profile; directly visible in Figma | Member 1; Member 2 and Member 3 review their destinations | Observed; route contract pending |
 | D03 | Router implementation/package | Centralized route names and resolver; Phase 03 uses Flutter Navigator/MaterialPageRoute. Retaining this or adopting go_router remains open. | Member 1; all feature owners review integration | Built-in Navigator implemented on Phase 03 branch; long-term choice pending |
 | D04 | State management | Consider Riverpod; prefer the simplest state that meets needs | Member 1 | Proposed; no dependency added |
-| D05 | Auth provider and registration fields | Email/password; full name, email, phone, password, confirm password | Member 1; Member 2 configures backend | Proposed; approval pending |
-| D06 | Verification, recovery, Google auth | Email verification and password recovery; defer Google unless required | Member 1 and Member 2 | Proposed; screen designs missing |
-| D07 | Session restore and logout routing | Restore valid session to Home; logout to a clean public auth stack | Member 1 | Proposed; approval pending |
+| D05 | Auth provider and registration fields | Email/password; full name, email, phone, password, confirm password | Member 1; Member 2 configures backend | Approved for Member 1 implementation; live Auth configuration pending |
+| D06 | Verification, recovery, Google auth | Require email verification and password recovery; defer Google | Member 1 and Member 2 | Approved for Member 1 implementation; recovery/verification designs missing |
+| D07 | Session restore and logout routing | Restore verified session to Home; logout to public login flow | Member 1 | Approved for Member 1 implementation |
 | D08 | Customer identity | Supabase Auth UUID as customer identity | Member 1, Member 2, Member 3 | Confirmed; enforced across schema and RLS |
 | D09 | Profile fields and creation | profiles.id references auth.users.id; full name, phone, saved address; DB trigger | Member 2 schema/trigger, Member 3 profile UI, Member 1 signup | Confirmed by Member 2 in Phase 02 migrations |
 | D10 | Booking payload and contact snapshots | Two-step flow; customer/service/description/address/date/time; name and phone snapshots | Member 2 schema, Member 1 shared contract, Member 3 profile handoff | Confirmed by Member 2 in Phase 02 migrations |
@@ -124,4 +125,4 @@ Terminal states: `CONFIRMED`, `CANCELLED`, `REJECTED`.
 | D13 | Customer cancellation | Permit cancellation only in NEW or REVIEWING | All; Member 2 enforces, Member 3 presents | Confirmed by Member 2 (enforced via RLS update policy) |
 | D14 | Review eligibility | One review per booking after COMPLETED or CONFIRMED | Member 3, Member 2 schema, Member 1 route | Confirmed by Member 2 (enforced via RLS insert policy) |
 | D15 | Admin testing mechanism | Authorized Dashboard or restricted backend flow, outside the app | Member 2; all review access boundary | Confirmed by Member 2 in docs/BACKEND_SPECIFICATION.md |
-| D16 | Release internet permission | Main manifest in scaffold lacks INTERNET; debug/profile contain it | Member 2 | Observed implementation requirement; resolve before release networking |
+| D16 | Release internet permission | Supabase auth needs Android internet access; Phase 04 added the permission to the main manifest | Member 2 | Added; verify final release manifest |

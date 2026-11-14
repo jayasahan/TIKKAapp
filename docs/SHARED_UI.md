@@ -1,21 +1,21 @@
 # TIKKA Shared UI and Navigation
 
-**Status:** Phase 03 implementation draft on `feature/shared-ui-navigation`. Routes and reusable components are available for review; product and backend contracts remain subject to the approvals in [SHARED_CONTRACTS.md](SHARED_CONTRACTS.md).
+**Status:** Phase 03 was merged in PR #19. Phase 04 now uses the shared components for its auth forms; feature-owned destination screens remain placeholders. Contract status is recorded in [SHARED_CONTRACTS.md](SHARED_CONTRACTS.md).
 
 ## App entry and navigation
 
-`MyApp` in `lib/app/app.dart` supplies the shared theme and delegates named routes to `AppRouter`. `AppRoutes` in `lib/app/router/app_routes.dart` is the source for route paths and parameter builders. Phase 03 uses Flutter's built-in `Navigator` and `MaterialPageRoute`; no router or state-management package was added. Whether to retain this router long term is still a team decision.
+`MyApp` in `lib/app/app.dart` supplies the shared theme and delegates named routes to `AppRouter`. `AppRoutes` in `lib/app/router/app_routes.dart` is the source for route paths and parameter builders. The app uses Flutter's built-in `Navigator` and `MaterialPageRoute`; no router or state-management package was added. Whether to retain this router long term is still a team decision.
 
-The app currently starts on `/home` to preview the four-destination shell. This is a development entry point, not the final authentication bootstrap. Phase 04 must replace it with session restoration and public/protected route handling. Routes are placeholders only; they do not authenticate users or provide backend authorization.
+The app preview mode starts on `/home`. The Android entry point initializes Supabase and uses the splash/login flow for signed-out users, restores verified sessions to the customer shell, and guards protected routes. Route guards are client navigation behavior; database access must still be secured by Supabase RLS. Auth routes are implemented; service and other feature routes remain placeholders.
 
-| Route | Destination | Phase 03 behavior |
+| Route | Destination | Current behavior |
 |---|---|---|
-| `/splash` | Welcome | Placeholder |
-| `/auth/login` | Sign in | Placeholder |
-| `/auth/register` | Create account | Placeholder |
-| `/auth/verify-email` | Verify email | Placeholder |
-| `/auth/forgot-password` | Forgot password | Placeholder |
-| `/auth/reset-password` | Reset password | Placeholder |
+| `/splash` | Welcome | Figma-inspired splash; continue to sign in |
+| `/auth/login` | Sign in | Supabase email/password sign-in; Google button deferred |
+| `/auth/register` | Create account | Name/email/phone/password validation and email signup |
+| `/auth/verify-email` | Verify email | Confirmation guidance and resend action |
+| `/auth/forgot-password` | Forgot password | Generic password recovery request confirmation |
+| `/auth/reset-password` | Reset password | Password update following recovery callback |
 | `/home` | Home tab | Customer shell placeholder |
 | `/services` | Services tab | Customer shell placeholder |
 | `/services/:serviceId` | Service details | Feature placeholder |
@@ -65,4 +65,4 @@ The theme defines Inter Display 36/44 bold; H1 28/36 bold; H2 22/30 semibold; H3
 
 ## Phase boundary and handoff
 
-This phase supplies navigation paths, shared UI primitives, theme tokens, and temporary destination placeholders. It does not implement authentication, session restoration, route guards, service content, booking behavior, profile behavior, tracking, reviews, or Supabase access. Phase 04 owns auth/session integration. Feature owners should replace their placeholders and coordinate path or shared-contract changes through the decision register.
+The shared UI phase supplied navigation paths, reusable UI, theme tokens, and temporary destination placeholders. Phase 04 added the auth/session integration described in [AUTHENTICATION.md](AUTHENTICATION.md). Feature owners should replace their placeholders and coordinate path or shared-contract changes through the decision register.
