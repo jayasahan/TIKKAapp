@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tikka/features/bookings/domain/booking.dart';
 import 'package:tikka/features/bookings/domain/booking_draft.dart';
 import 'package:tikka/features/bookings/domain/bookings_repository.dart';
+import 'package:tikka/features/bookings/domain/bookings_failure.dart';
 
 class SupabaseBookingsRepository implements BookingsRepository {
   SupabaseBookingsRepository({this.client});
@@ -13,6 +14,74 @@ class SupabaseBookingsRepository implements BookingsRepository {
   int _sequenceCounter = 1042;
 
   @override
+  Future<List<Booking>> getCurrentCustomerBookings() async {
+    final user = _requireUser();
+    final activeClient = client;
+    if (activeClient == null) {
+      return _inMemoryBookings
+          .where((booking) => booking.customerId == user.id)
+          .toList();
+    }
+
+    try {
+      final response = await activeClient
+          .from('bookings')
+          .select('*, services(name)')
+          .eq('customer_id', user.id)
+          .order('created_at', ascending: false);
+      return (response as List<dynamic>)
+          .map((item) => _bookingFromResponse(item as Map<String, dynamic>))
+          .toList();
+    } on PostgrestException {
+      throw const BookingsFailure(
+        'We could not load your requests. Check your connection and try again.',
+      );
+    } on BookingsFailure {
+      rethrow;
+    } on Object {
+      throw const BookingsFailure(
+        'We could not load your requests. Check your connection and try again.',
+      );
+    }
+  }
+
+  @override
+  Future<Booking?> getCurrentCustomerBookingById(String bookingId) async {
+    final user = _requireUser();
+    final activeClient = client;
+    if (activeClient == null) {
+      return _inMemoryBookings
+          .where(
+            (booking) =>
+                booking.customerId == user.id &&
+                (booking.id == bookingId ||
+                    booking.bookingReference == bookingId),
+          )
+          .firstOrNull;
+    }
+
+    try {
+      final response = await activeClient
+          .from('bookings')
+          .select('*, services(name)')
+          .eq('id', bookingId)
+          .eq('customer_id', user.id)
+          .maybeSingle();
+      return response == null ? null : _bookingFromResponse(response);
+    } on PostgrestException {
+      throw const BookingsFailure(
+        'We could not load this request. Check your connection and try again.',
+      );
+    } on BookingsFailure {
+      rethrow;
+    } on Object {
+      throw const BookingsFailure(
+        'We could not load this request. Check your connection and try again.',
+      );
+    }
+  }
+
+  @override
   Future<Booking> createBooking(
     BookingDraft draft, {
     required String customerId,
@@ -21,8 +90,9 @@ class SupabaseBookingsRepository implements BookingsRepository {
 
     if (activeClient != null) {
       try {
+        final authenticatedUser = _requireUser();
         final payload = <String, dynamic>{
-          'customer_id': customerId,
+          'customer_id': authenticatedUser.id,
           'service_id': draft.serviceId,
           'status': 'NEW',
           'problem_description': draft.problemDescription.trim(),
@@ -45,9 +115,11 @@ class SupabaseBookingsRepository implements BookingsRepository {
             .select()
             .single();
 
-        final booking = Booking.fromJson(response);
+        final booking = _bookingFromResponse(response);
         _inMemoryBookings.insert(0, booking);
         return booking;
+      } on BookingsFailure {
+        rethrow;
       } on Object {
         // Fallback to local simulation if live Supabase is not reachable
         return _createLocalBooking(draft, customerId);
@@ -63,17 +135,20 @@ class SupabaseBookingsRepository implements BookingsRepository {
 
     if (activeClient != null) {
       try {
+        final authenticatedUser = _requireUser();
         final response = await activeClient
             .from('bookings')
-            .select()
-            .eq('customer_id', customerId)
+            .select('*, services(name)')
+            .eq('customer_id', authenticatedUser.id)
             .order('created_at', ascending: false);
 
         final list = (response as List<dynamic>)
-            .map((item) => Booking.fromJson(item as Map<String, dynamic>))
+            .map((item) => _bookingFromResponse(item as Map<String, dynamic>))
             .toList();
 
         return list;
+      } on BookingsFailure {
+        rethrow;
       } on Object {
         return _inMemoryBookings
             .where((b) => b.customerId == customerId)
@@ -90,15 +165,19 @@ class SupabaseBookingsRepository implements BookingsRepository {
 
     if (activeClient != null) {
       try {
+        final authenticatedUser = _requireUser();
         final response = await activeClient
             .from('bookings')
-            .select()
+            .select('*, services(name)')
             .eq('id', bookingId)
+            .eq('customer_id', authenticatedUser.id)
             .maybeSingle();
 
         if (response != null) {
-          return Booking.fromJson(response);
+          return _bookingFromResponse(response);
         }
+      } on BookingsFailure {
+        rethrow;
       } on Object {
         // continue to in-memory lookup
       }
@@ -115,6 +194,7 @@ class SupabaseBookingsRepository implements BookingsRepository {
 
     if (activeClient != null) {
       try {
+        final authenticatedUser = _requireUser();
         await activeClient
             .from('bookings')
             .update({
@@ -122,7 +202,10 @@ class SupabaseBookingsRepository implements BookingsRepository {
               'cancellation_reason': ?reason,
               'updated_at': DateTime.now().toIso8601String(),
             })
-            .eq('id', bookingId);
+            .eq('id', bookingId)
+            .eq('customer_id', authenticatedUser.id);
+      } on BookingsFailure {
+        rethrow;
       } on Object {
         // continue to in-memory update
       }
@@ -178,5 +261,26 @@ class SupabaseBookingsRepository implements BookingsRepository {
     );
     _inMemoryBookings.insert(0, booking);
     return booking;
+  }
+
+  User _requireUser() {
+    final user = client?.auth.currentUser;
+    if (user == null) {
+      throw const BookingsFailure(
+        'Your session has expired. Please sign in again.',
+      );
+    }
+    return user;
+  }
+
+  Booking _bookingFromResponse(Map<String, dynamic> response) {
+    final service = response['services'];
+    if (response['service_name'] == null && service is Map<String, dynamic>) {
+      return Booking.fromJson(<String, dynamic>{
+        ...response,
+        'service_name': service['name'],
+      });
+    }
+    return Booking.fromJson(response);
   }
 }
