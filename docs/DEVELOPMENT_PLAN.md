@@ -1,6 +1,6 @@
 # TIKKA Development Plan
 
-**Planning state:** Phase owners and milestone targets reflect the project brief. Dates are targets. Phases 01–05 are merged (PRs #17, #18, #19, #20, #21); Phase 06 (Customer Booking Flow) implementation is complete on `feature/customer-booking`.
+**Planning state:** Phase owners and milestone targets reflect the project brief. Dates are targets. Phases 01–09 are merged; Phase 10 (Admin and Backend Testing) is completed on `feature/admin-backend-testing`.
 
 ## Milestones
 
@@ -21,11 +21,11 @@
 | 03 | #4 | Shared UI Components and Navigation | Member 1 — PrabodhaRanawaka | M1 | Implemented and merged in PR #19. |
 | 04 | #5 | Customer Authentication | Member 1 — PrabodhaRanawaka | M2 | Implemented and merged in PR #20. |
 | 05 | #6 | Service Browsing and Details | Member 2 — ashuraweismann | M2 | Implemented and merged in PR #21; catalog browsing, category filtering, search, and service details matching Figma. |
-| 06 | #7 | Customer Booking Flow | Member 2 — ashuraweismann | M2 | Implemented on `feature/customer-booking`; approved booking fields, two-step confirmation, and optional photo upload matching Figma Screens 06 & 07. |
-| 07 | #8 | Customer Profile Management | Member 3 — jayasahan | M2 | Implement approved profile view/edit contract. |
-| 08 | #9 | Booking History and Request Tracking | Member 3 — jayasahan | M2 | Implement request filters, status display, and tracking timeline. |
-| 09 | #10 | Ratings and Reviews | Member 3 — jayasahan | M3 | Implement after eligibility, rating/comment fields, and design are agreed. |
-| 10 | #11 | Admin and Backend Testing | Member 2 — ashuraweismann | M3 | Verify backend and use the approved authorized administrative testing workflow; no admin mobile app. |
+| 06 | #7 | Customer Booking Flow | Member 2 — ashuraweismann | M2 | Implemented and merged in PR #22; approved booking fields, two-step confirmation, and optional photo upload matching Figma Screens 06 & 07. |
+| 07 | #8 | Customer Profile Management | Member 3 — jayasahan | M2 | Implemented and merged; profile view/edit contract. |
+| 08 | #9 | Booking History and Request Tracking | Member 3 — jayasahan | M2 | Implemented and merged; request filters, status display, and tracking timeline. |
+| 09 | #10 | Ratings and Reviews | Member 3 — jayasahan | M3 | Implemented and merged; 1-5 star ratings and reviews for completed requests. |
+| 10 | #11 | Admin and Backend Testing | Member 2 — ashuraweismann | M3 | Implemented on `feature/admin-backend-testing`; authorized admin procedures, status transition engine, test booking catalog, security verification, and documentation. |
 | 11 | #12 | Application Integration | Member 1 — PrabodhaRanawaka | M3 | Connect owned feature routes/contracts and resolve integration issues without taking over other features. |
 | 12 | #13 | Functional Testing | Member 3 — jayasahan | M3 | Run agreed end-to-end functional QA across the customer workflow. |
 | 13 | #14 | UI Consistency and Usability | Member 1 — PrabodhaRanawaka | M4 | Reconcile implemented screens against accepted Figma and shared components. |
@@ -58,6 +58,22 @@
 | Unit and widget test coverage | Passed: all 31 tests pass across auth, services, bookings repository, booking presentation flow, and app shell. |
 | `flutter analyze` passes | Passed with 0 issues. |
 
+## Phase 10 acceptance checklist
+
+| Issue #11 criterion | State |
+|---|---|
+| Minimum administrative operations defined | Defined in `docs/ADMIN_TESTING_WORKFLOW.md`: booking status progression, worker assignment, scheduling, rejection, and service catalog management. |
+| Authorized administrative methods established | Implemented in `supabase/admin_workflow.sql` with state machine validator, `admin_update_booking_status`, `admin_list_bookings`, `admin_toggle_service_active`, and `admin_upsert_service`. |
+| Customer administrative restriction enforced | Verified at PostgreSQL engine boundary: RLS denies status mutations to `ASSIGNED`, `IN_PROGRESS`, `COMPLETED` for customer client roles. |
+| Zero privileged secrets in client application | Verified: Flutter codebase and configuration contain only public client credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`); `service_role` and DB passwords are not present. |
+| Representative test bookings across all statuses | Populated in `supabase/seed_test_bookings.sql` covering `NEW`, `REVIEWING`, `SCHEDULED`, `ASSIGNED`, `IN_PROGRESS`, `COMPLETED`, `CONFIRMED`, `CANCELLED`, `REJECTED`. |
+| Status updates reflected in customer tracking | Verified: `BookingTrackingScreen` displays real-time status transitions, timeline node completion, and technician assignment. |
+| Completed bookings support review workflow | Verified: `COMPLETED` and `CONFIRMED` bookings surface the "Review service" action and allow 1-5 star ratings. |
+| Database constraints and RLS policies tested | Verified via `test/features/admin/backend_security_and_lifecycle_test.dart` (6 automated test suites passing). |
+| Administrative testing and demonstration documentation | Comprehensive documentation deliverable in `docs/ADMIN_TESTING_WORKFLOW.md`. |
+| `flutter analyze` and `flutter test` pass | Passed: 0 analyzer issues, 52 / 52 tests pass across all features. |
+
 ## Follow-up requirements and blockers
 
-- Customer Profile Management (Phase 07 / Issue #8) and Booking History & Request Tracking (Phase 08 / Issue #9) are owned by Member 3 (`jayasahan`), connecting requests created in Phase 06 to the tracking timeline.
+- Application Integration (Phase 11 / Issue #12) is owned by Member 1 (`PrabodhaRanawaka`), connecting feature routes/contracts and verifying holistic client flows.
+- Functional Testing (Phase 12 / Issue #13) is owned by Member 3 (`jayasahan`), running agreed end-to-end customer QA.
