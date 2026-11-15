@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tikka/app/app.dart';
+import 'package:tikka/app/integration/home_recent_request_preview.dart';
 import 'package:tikka/app/router/app_routes.dart';
+import 'package:tikka/features/bookings/data/supabase_bookings_repository.dart';
 import 'package:tikka/features/services/data/supabase_services_repository.dart';
 import 'package:tikka/features/services/presentation/home_screen.dart';
 import 'package:tikka/features/services/presentation/service_details_screen.dart';
@@ -24,6 +26,9 @@ void main() {
               body: HomeScreen(
                 repository: repository,
                 customerName: 'Jayasahan',
+                recentRequestPreview: HomeRecentRequestPreview(
+                  repository: SupabaseBookingsRepository(),
+                ),
               ),
             ),
           ),
@@ -37,7 +42,8 @@ void main() {
         expect(find.text('Request a Service'), findsOneWidget);
         expect(find.text('Services'), findsOneWidget);
         expect(find.text('Plumbing'), findsWidgets);
-        expect(find.text('Recent Request'), findsOneWidget);
+        expect(find.text('No recent request'), findsOneWidget);
+        expect(find.textContaining('TK-1042'), findsNothing);
       },
     );
 

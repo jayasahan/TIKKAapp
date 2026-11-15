@@ -104,9 +104,9 @@ class TikkaErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       liveRegion: true,
-      child: SizedBox(
+      child: Container(
         width: double.infinity,
-        height: 180,
+        constraints: const BoxConstraints(minHeight: 180),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 330),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tikka/app/router/app_route_observer.dart';
 import 'package:tikka/app/router/app_router.dart';
 import 'package:tikka/app/router/app_routes.dart';
 import 'package:tikka/app/theme/app_theme.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         title: 'TIKKA',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
+        navigatorObservers: <NavigatorObserver>[appRouteObserver],
         initialRoute: AppRoutes.initial,
         onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
           settings,
@@ -71,6 +73,7 @@ class MyApp extends StatelessWidget {
           title: 'TIKKA',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
+          navigatorObservers: <NavigatorObserver>[appRouteObserver],
           initialRoute: initialRoute,
           onGenerateInitialRoutes: (routeName) => <Route<dynamic>>[
             AppRouter.onGenerateRoute(
