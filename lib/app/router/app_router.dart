@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tikka/app/integration/home_recent_request_preview.dart';
 import 'package:tikka/app/navigation/app_shell.dart';
 import 'package:tikka/app/navigation/customer_destination.dart';
 import 'package:tikka/app/router/app_routes.dart';
@@ -184,6 +185,9 @@ abstract final class AppRouter {
           child: HomeScreen(
             repository: effectiveServicesRepo,
             customerName: namePreview,
+            recentRequestPreview: HomeRecentRequestPreview(
+              repository: effectiveBookingsRepo,
+            ),
           ),
         );
       case AppRoutes.services:

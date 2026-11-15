@@ -37,8 +37,16 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       _errorMessage = null;
     });
 
-    final customerId =
-        widget.authRepository?.currentSnapshot?.userId ?? 'demo-customer-uuid';
+    final authSnapshot = widget.authRepository?.currentSnapshot;
+    if (widget.authRepository != null &&
+        authSnapshot?.isAuthenticated != true) {
+      setState(() {
+        _isSubmitting = false;
+        _errorMessage = 'Your session has expired. Please sign in again.';
+      });
+      return;
+    }
+    final customerId = authSnapshot?.userId ?? 'demo-customer-uuid';
 
     try {
       final booking = await widget.bookingsRepository.createBooking(

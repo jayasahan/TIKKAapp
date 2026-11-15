@@ -9,10 +9,16 @@ import 'package:tikka/features/services/domain/services_repository.dart';
 import 'package:tikka/features/services/presentation/widgets/service_category_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.repository, this.customerName});
+  const HomeScreen({
+    super.key,
+    required this.repository,
+    required this.recentRequestPreview,
+    this.customerName,
+  });
 
   final ServicesRepository repository;
   final String? customerName;
+  final Widget recentRequestPreview;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -197,87 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: AppSpacing.xLarge),
 
-              // Active Request Preview Card (matching Figma Screen 03)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.large),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(AppRadii.card),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Recent Request',
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(
-                                color: AppColors.textSecondary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.small,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.brandYellow,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            'SCHEDULED',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.small),
-                    Text(
-                      'Plumbing • #TK-1042',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '12 Oct • 10:00 AM',
-                      style: Theme.of(context).textTheme.bodySmall
-                          ?.copyWith(color: AppColors.textSecondary),
-                    ),
-                    const SizedBox(height: AppSpacing.medium),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.requests);
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            'View request details',
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                ),
-                          ),
-                          const SizedBox(width: AppSpacing.xSmall),
-                          const Icon(Icons.arrow_forward, size: 14),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              widget.recentRequestPreview,
+              const SizedBox(height: AppSpacing.large),
             ],
           ),
         ),
