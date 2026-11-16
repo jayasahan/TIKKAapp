@@ -6,6 +6,7 @@ import 'package:tikka/app/theme/app_theme.dart';
 import 'package:tikka/features/bookings/data/supabase_bookings_repository.dart';
 import 'package:tikka/features/bookings/domain/booking.dart';
 import 'package:tikka/features/bookings/domain/booking_draft.dart';
+import 'package:tikka/features/bookings/domain/bookings_failure.dart';
 import 'package:tikka/features/bookings/presentation/booking_status.dart';
 import 'package:tikka/features/bookings/presentation/booking_tracking_screen.dart';
 import 'package:tikka/features/reviews/domain/review_validation.dart';
@@ -218,6 +219,39 @@ void main() {
             reason: 'Status $st must not be cancellable by customer',
           );
         }
+      },
+    );
+
+    test(
+      'customer cancellation rejects non-cancellable local requests',
+      () async {
+        final booking = await repository.createBooking(
+          BookingDraft(
+            serviceId: 'plumbing-general',
+            serviceName: 'Plumbing',
+            problemDescription: 'Leaking tap',
+            serviceAddress: 'Matara',
+            contactName: 'Customer',
+            contactPhone: '+94771234567',
+            preferredDate: DateTime.now().add(const Duration(days: 1)),
+            preferredTime: '10:00 AM',
+          ),
+          customerId: 'customer-1',
+        );
+
+        await repository.adminAdvanceStatus(
+          bookingId: booking.id,
+          targetStatus: 'REVIEWING',
+        );
+        await repository.adminAdvanceStatus(
+          bookingId: booking.id,
+          targetStatus: 'SCHEDULED',
+        );
+
+        await expectLater(
+          repository.cancelBooking(booking.id),
+          throwsA(isA<BookingsFailure>()),
+        );
       },
     );
 

@@ -196,4 +196,6 @@ $ flutter test test/features/admin/backend_security_and_lifecycle_test.dart
 00:00 +5: Phase 10 — Administrative & Backend Security Testing 6. Zero Privileged Secrets in Flutter Codebase Verification
 00:00 +6: All tests passed!
 ```
-Total test coverage across the repository: **52 / 52 tests passed**, **0 static analysis issues**.
+Historical Phase 10 execution covered **52 / 52 tests**. The Phase 12 final
+execution covered **56 / 56 tests passed**, with **0 static analysis issues**;
+see [docs/qa/test-execution-report.md](qa/test-execution-report.md).
