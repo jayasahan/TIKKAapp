@@ -13,7 +13,7 @@ class SupabaseBookingsRepository implements BookingsRepository {
 
   final SupabaseClient? client;
 
-  // In-memory backing store for local testing and offline fallback
+  // In-memory backing store for local testing and administrative demonstrations.
   final List<Booking> _inMemoryBookings = <Booking>[];
   int _sequenceCounter = 1042;
 
@@ -125,8 +125,9 @@ class SupabaseBookingsRepository implements BookingsRepository {
       } on BookingsFailure {
         rethrow;
       } on Object {
-        // Fallback to local simulation if live Supabase is not reachable
-        return _createLocalBooking(draft, customerId);
+        throw const BookingsFailure(
+          'We could not submit your request. Check your connection and try again.',
+        );
       }
     }
 
@@ -154,9 +155,9 @@ class SupabaseBookingsRepository implements BookingsRepository {
       } on BookingsFailure {
         rethrow;
       } on Object {
-        return _inMemoryBookings
-            .where((b) => b.customerId == customerId)
-            .toList();
+        throw const BookingsFailure(
+          'We could not load your requests. Check your connection and try again.',
+        );
       }
     }
 
@@ -183,7 +184,9 @@ class SupabaseBookingsRepository implements BookingsRepository {
       } on BookingsFailure {
         rethrow;
       } on Object {
-        // continue to in-memory lookup
+        throw const BookingsFailure(
+          'We could not load this request. Check your connection and try again.',
+        );
       }
     }
 
@@ -211,13 +214,18 @@ class SupabaseBookingsRepository implements BookingsRepository {
       } on BookingsFailure {
         rethrow;
       } on Object {
-        // continue to in-memory update
+        throw const BookingsFailure(
+          'We could not cancel this request. Check your connection and try again.',
+        );
       }
     }
 
     final index = _inMemoryBookings.indexWhere((b) => b.id == bookingId);
     if (index != -1) {
       final existing = _inMemoryBookings[index];
+      if (!existing.isCancellable) {
+        throw const BookingsFailure('This request can no longer be cancelled.');
+      }
       _inMemoryBookings[index] = Booking(
         id: existing.id,
         bookingReference: existing.bookingReference,
@@ -322,7 +330,9 @@ class SupabaseBookingsRepository implements BookingsRepository {
         }
         return updated;
       } on Object {
-        // Fallback to in-memory update
+        throw const BookingsFailure(
+          'We could not update this request. Check your connection and try again.',
+        );
       }
     }
 

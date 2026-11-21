@@ -71,7 +71,7 @@
 | Completed bookings support review workflow | Verified: `COMPLETED` and `CONFIRMED` bookings surface the "Review service" action and allow 1-5 star ratings. |
 | Database constraints and RLS policies tested | Verified via `test/features/admin/backend_security_and_lifecycle_test.dart` (6 automated test suites passing). |
 | Administrative testing and demonstration documentation | Comprehensive documentation deliverable in `docs/ADMIN_TESTING_WORKFLOW.md`. |
-| `flutter analyze` and `flutter test` pass | Passed: 0 analyzer issues, 52 / 52 tests pass across all features. |
+| `flutter analyze` and `flutter test` pass | Historical Phase 10 baseline: 52 / 52 tests passed with 0 analyzer issues. Phase 12 final run: 56 / 56 tests passed with 0 analyzer issues; see `docs/qa/test-execution-report.md`. |
 
 ## Follow-up requirements and blockers
 
