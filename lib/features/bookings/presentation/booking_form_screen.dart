@@ -211,8 +211,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
           key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.page,
-              vertical: AppSpacing.large,
+              horizontal: AppSpacing.large,
+              vertical: AppSpacing.medium,
             ),
             child: Center(
               child: ConstrainedBox(

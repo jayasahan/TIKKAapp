@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tikka/app/theme/app_theme.dart';
+import 'package:tikka/core/widgets/tikka_app_bar.dart';
 import 'package:tikka/core/widgets/tikka_button.dart';
 import 'package:tikka/core/widgets/tikka_states.dart';
 import 'package:tikka/core/widgets/tikka_text_field.dart';
@@ -110,13 +111,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
-          tooltip: 'Back',
-        ),
-        title: const Text('Edit profile'),
+      appBar: TikkaAppBar(
+        eyebrow: 'TIKKA',
+        title: 'Edit profile',
+        onBackPressed: () => Navigator.of(context).pop(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.large),

@@ -28,7 +28,7 @@
 | 10 | #11 | Admin and Backend Testing | Member 2 — ashuraweismann | M3 | Implemented on `feature/admin-backend-testing`; authorized admin procedures, status transition engine, test booking catalog, security verification, and documentation. |
 | 11 | #12 | Application Integration | Member 1 — PrabodhaRanawaka | M3 | Connect owned feature routes/contracts and resolve integration issues without taking over other features. |
 | 12 | #13 | Functional Testing | Member 3 — jayasahan | M3 | Run agreed end-to-end functional QA across the customer workflow. |
-| 13 | #14 | UI Consistency and Usability | Member 1 — PrabodhaRanawaka | M4 | Reconcile implemented screens against accepted Figma and shared components. |
+| 13 | #14 | UI Consistency and Usability | Member 1 — PrabodhaRanawaka | M4 | Completed on `feature/ui-consistency-usability`; reconciled screen margins, TikkaAppBar headers, hero card responsiveness, and accessibility touch targets. Deliverable in `docs/UI_CONSISTENCY_AND_USABILITY_REPORT.md`. |
 | 14 | #15 | Android Release Build | Member 2 — ashuraweismann | M4 | Prepare and verify release configuration, permissions, signing, and Android build output. |
 | 15 | #16 | Final Documentation and Submission | Member 3 — jayasahan | M4 | Complete project report, evidence, and submission packaging. |
 
@@ -73,7 +73,19 @@
 | Administrative testing and demonstration documentation | Comprehensive documentation deliverable in `docs/ADMIN_TESTING_WORKFLOW.md`. |
 | `flutter analyze` and `flutter test` pass | Historical Phase 10 baseline: 52 / 52 tests passed with 0 analyzer issues. Phase 12 final run: 56 / 56 tests passed with 0 analyzer issues; see `docs/qa/test-execution-report.md`. |
 
+## Phase 13 acceptance checklist
+
+| Issue #14 criterion | State |
+|---|---|
+| Screen margins and spacing standardized | Reconciled across all screens to 16 px (`AppSpacing.large`); aligned booking form and confirmation screens from 20 px to 16 px. |
+| Header and App Bar standardization | Standardized `EditProfileScreen`, `BookingTrackingScreen`, and `ReviewScreen` to use canonical `TikkaAppBar`. |
+| Home hero card overflow protection | Added `maxLines: 2` and `overflow: TextOverflow.ellipsis` to heading, resolving `docs/DESIGN_REFERENCE.md` note. |
+| Status badge component reuse | Standardized recent request card on Home to use canonical `StatusBadge` matching Request History and Tracking. |
+| Touch target accessibility enforced | Verified $\ge 48$ dp touch targets across buttons, form controls, star ratings, and icon buttons. |
+| Comprehensive UI deliverable deliverable | Documented in `docs/UI_CONSISTENCY_AND_USABILITY_REPORT.md`. |
+| `flutter analyze` and `flutter test` pass | Passed: 0 analyzer issues, 56 / 56 tests passed with zero regressions. |
+
 ## Follow-up requirements and blockers
 
-- Application Integration (Phase 11 / Issue #12) is owned by Member 1 (`PrabodhaRanawaka`), connecting feature routes/contracts and verifying holistic client flows.
-- Functional Testing (Phase 12 / Issue #13) is owned by Member 3 (`jayasahan`), running agreed end-to-end customer QA.
+- Android Release Build (Phase 14 / Issue #15) is owned by Member 2 (`ashuraweismann`), preparing release signing, permissions, and build output.
+- Final Documentation and Submission (Phase 15 / Issue #16) is owned by Member 3 (`jayasahan`), completing project report, evidence, and submission packaging.
