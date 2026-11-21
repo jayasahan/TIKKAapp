@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tikka/app/theme/app_theme.dart';
+import 'package:tikka/core/widgets/tikka_app_bar.dart';
 import 'package:tikka/core/widgets/tikka_button.dart';
 import 'package:tikka/core/widgets/tikka_states.dart';
 import 'package:tikka/core/widgets/tikka_text_field.dart';
@@ -143,7 +144,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
     if (_error != null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Review service')),
+        appBar: TikkaAppBar(
+          eyebrow: 'TIKKA',
+          title: 'Review service',
+          onBackPressed: () => Navigator.of(context).maybePop(),
+        ),
         body: Center(child: TikkaErrorState(message: _error!)),
       );
     }
@@ -161,13 +166,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text('Review service'),
+      appBar: TikkaAppBar(
+        eyebrow: 'TIKKA',
+        title: 'Review service',
+        onBackPressed: () => Navigator.of(context).maybePop(),
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.large),

@@ -139,8 +139,8 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.page,
-            vertical: AppSpacing.large,
+            horizontal: AppSpacing.large,
+            vertical: AppSpacing.medium,
           ),
           child: Center(
             child: ConstrainedBox(

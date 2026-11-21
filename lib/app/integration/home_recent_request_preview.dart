@@ -6,6 +6,7 @@ import 'package:tikka/core/widgets/tikka_states.dart';
 import 'package:tikka/features/bookings/domain/booking.dart';
 import 'package:tikka/features/bookings/domain/bookings_failure.dart';
 import 'package:tikka/features/bookings/domain/bookings_repository.dart';
+import 'package:tikka/features/bookings/presentation/booking_history_screen.dart';
 
 class HomeRecentRequestPreview extends StatefulWidget {
   const HomeRecentRequestPreview({super.key, required this.repository});
@@ -122,25 +123,7 @@ class _HomeRecentRequestPreviewState extends State<HomeRecentRequestPreview>
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.small,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.brandYellow,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  booking.status.replaceAll('_', ' '),
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ),
+              StatusBadge(status: booking.status),
             ],
           ),
           const SizedBox(height: AppSpacing.small),

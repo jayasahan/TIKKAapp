@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tikka/app/router/app_routes.dart';
 import 'package:tikka/app/theme/app_theme.dart';
+import 'package:tikka/core/widgets/tikka_app_bar.dart';
 import 'package:tikka/core/widgets/tikka_states.dart';
 import 'package:tikka/features/bookings/domain/booking.dart';
 import 'package:tikka/features/bookings/domain/bookings_failure.dart';
@@ -90,20 +91,15 @@ class _BookingTrackingScreenState extends State<BookingTrackingScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text('Request tracking'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: _isRefreshing ? null : () => _loadBooking(refresh: true),
-            tooltip: 'Refresh request',
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
+      appBar: TikkaAppBar(
+        eyebrow: 'TIKKA',
+        title: 'Request tracking',
+        onBackPressed: () => Navigator.of(context).maybePop(),
+        action: const Icon(Icons.refresh),
+        actionTooltip: 'Refresh request',
+        onActionPressed: _isRefreshing
+            ? null
+            : () => _loadBooking(refresh: true),
       ),
       body: RefreshIndicator(
         onRefresh: () => _loadBooking(refresh: true),
@@ -140,6 +136,13 @@ class _BookingTrackingScreenState extends State<BookingTrackingScreen> {
                 onPressed: () =>
                     Navigator.of(context)
                         .pushNamed(AppRoutes.writeReview(booking.id)),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                  side: const BorderSide(color: AppColors.border),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadii.button),
+                  ),
+                ),
                 icon: const Icon(Icons.star_outline),
                 label: const Text('Review service'),
               ),
